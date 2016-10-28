@@ -11,7 +11,7 @@ import java.util.List;
 public class DevelopingEnvironment {
 
     int lockerAmount = getLockerAmount();
-    List lockers;
+    List<Locker> lockers;
 
     public int getLockerAmount(){
         return 0;
@@ -29,7 +29,7 @@ public class DevelopingEnvironment {
      * finds its neighbours
      */
     private void init(){
-        lockers = new LinkedList();
+        lockers = new LinkedList<Locker>();
         for(int i = 0; i < lockerAmount; i++){
 
         }

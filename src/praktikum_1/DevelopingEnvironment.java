@@ -1,3 +1,5 @@
+package praktikum_1;
+
 import java.util.List;
 
 /**

@@ -1,6 +1,8 @@
 package praktikum_1;
 
+import java.util.LinkedList;
 import java.util.List;
+
 
 /**
  *
@@ -8,6 +10,12 @@ import java.util.List;
  */
 public class DevelopingEnvironment {
 
+    int lockerAmount = getLockerAmount();
+    List lockers;
+
+    public int getLockerAmount(){
+        return 0;
+    }
     /**
      * Counts the encounter of our
      * @return
@@ -21,6 +29,10 @@ public class DevelopingEnvironment {
      * finds its neighbours
      */
     private void init(){
+        lockers = new LinkedList();
+        for(int i = 0; i < lockerAmount; i++){
+
+        }
 
     }
 
@@ -28,7 +40,7 @@ public class DevelopingEnvironment {
      * Searches the neighbours of one Locker
      * @return
      */
-    private List<Locker> neighbours(){
+    private List<Integer> neighbours(){
         return null;
     }
 }

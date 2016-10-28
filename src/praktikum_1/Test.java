@@ -1,15 +1,10 @@
 package praktikum_1;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Scanner;
-
-import static java.lang.Integer.valueOf;
 
 /**
  * Created by Malte on 27.10.2016.
@@ -17,7 +12,7 @@ import static java.lang.Integer.valueOf;
 public class Test {
     public static void main(String[] args) throws IOException {
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line = "";
 

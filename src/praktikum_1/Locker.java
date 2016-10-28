@@ -110,7 +110,7 @@ public class Locker {
         this.isFocusPerson = false;
     }
 
-    public void assignLocker() {
+    public void setLocker() {
         this.occupied = true;
     }
 

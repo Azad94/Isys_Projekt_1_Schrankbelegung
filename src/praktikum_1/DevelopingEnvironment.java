@@ -13,23 +13,45 @@ public class DevelopingEnvironment {
     List<Locker> lockers;
 
     //time the studio opens
-    int openingHours;
+    long openingHours;
     //time the studio closes
-    int closingTime;
+    long closingTime;
 
-    int currentTime;
+    long currentTime;
 
+    //tells if the focus person is in the studio
     boolean focusPersonArrived;
 
+    //tells how many encouters the focus person had
+    int totalEncounters;
 
+    Locker dummyLocker;
+
+
+    /**
+     * gets the Amount of Lockers
+     * which are given as param
+     * @return Amount of Lockers
+     */
     public int getLockerAmount(){
+        //TODO IMPLEMENTIEREN
         return 0;
     }
+
+    public long getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(long currentTime) {
+        this.currentTime = currentTime;
+    }
+
     /**
      * Counts the encounter of our
      * @return
      */
     public int encounter(){
+        //TODO IMPLEMENTIEREN
         return 0;
     }
 
@@ -39,8 +61,8 @@ public class DevelopingEnvironment {
      */
     private void init(){
         lockers = new LinkedList<Locker>();
-        Locker dummyLocker;
         focusPersonArrived = false;
+        totalEncounters = 0;
 
         //TODO MALTE
         //TODO die zeiten festelegenich hab das noch nivht verstanden was Jonas meinte
@@ -58,9 +80,45 @@ public class DevelopingEnvironment {
     public boolean checkForFocusPerson(){
 
         //TODO die Zeit muss hier angepasst werden auf den richtigen Datentyp
-        if(currentTime > 1445){
+        if(getCurrentTime() > 1445){
             return focusPersonArrived = true;
         }
         else return focusPersonArrived = false;
+    }
+
+    //TODO starten des Taktes
+    public void start(){
+        setCurrentTime(currentTime + 10);
+    }
+
+    //TODO enden des Taktes
+    public void end(){
+
+    }
+
+    public void simulate(){
+
+        init();
+        start();
+
+        while(!focusPersonArrived){
+            //TODO IMPLEMENTIEREN
+        }
+
+        while(focusPersonArrived){
+            //TODO IMPLEMENTIEREN
+            encounter();
+        }
+        end();
+        frequencyScale();
+    }
+
+    public void frequencyScale(){
+        //TODO IMPLEMENTIEREN Häufigkeitsverteilung
+    }
+
+    public void assignLocker(){
+        //TODO Implementieren
+        dummyLocker.setLocker();
     }
 }

@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class DevelopingEnvironment {
 
-    private int lockerAmount = getLockerAmount();
+    private int lockerAmount;
     private List<Locker> lockers;
     private List<Integer> occupiedNeighbours;
     private List<Integer> freeNeighbours;
@@ -54,7 +54,7 @@ public class DevelopingEnvironment {
         }
     }
 
-    private void init() {
+    public void init() {
         lockers = new LinkedList<>();
         focusPersonArrived = false;
         focusPersonLeft = false;
@@ -141,7 +141,7 @@ public class DevelopingEnvironment {
     }
 
 
-    public void simulate() {
+    public void simulate(int lockerAmount) {
 
         //TODO einfach so reingeschrieben erstmal damit da nicht überall steht never used
         init();

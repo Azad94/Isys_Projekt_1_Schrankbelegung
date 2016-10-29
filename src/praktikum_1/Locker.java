@@ -114,10 +114,6 @@ public class Locker {
         this.isFocusPerson = false;
     }
 
-    public void setLocker() {
-        this.occupied = true;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

@@ -7,6 +7,7 @@ import java.util.Random;
 public class DevelopingEnvironment {
 
     private int lockerAmount = getLockerAmount();
+    private List<Locker> lockers;
     private List<Integer> occupiedNeighbours;
     private List<Integer> freeNeighbours;
     //time the studio opens
@@ -17,6 +18,7 @@ public class DevelopingEnvironment {
     private long timeOfArrivalOfFocusPerson;
     //tells if the focus person is in the studio
     private boolean focusPersonArrived;
+    private boolean focusPersonLeft;
     //tells how many encouters the focus person had
     private int totalEncounters;
     private Locker dummyLocker;
@@ -53,8 +55,9 @@ public class DevelopingEnvironment {
     }
 
     private void init() {
-        List<Locker> lockers = new LinkedList<>();
+        lockers = new LinkedList<>();
         focusPersonArrived = false;
+        focusPersonLeft = false;
         totalEncounters = 0;
         openingHours = 10;
         closingTime = 22;
@@ -69,18 +72,52 @@ public class DevelopingEnvironment {
 
     public void assignLocker() {
         dummyLocker.setLocker_number(randomLockerNumber());
-        long duration = getDurationOfStay();
+        long duration = getRandomDuration();
+        dummyLocker.setOccupied(true);
+        if (focusPersonArrived) {
+            targetLocker.setLocker_number(dummyLocker.getLockerNumber());
+            dummyLocker.setFocusPerson(true);
+        }
+        else dummyLocker.setFocusPerson(false);
         dummyLocker.setChange_In(getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
-        dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
-        if (focusPersonArrived) targetLocker.setLocker_number(dummyLocker.getLockerNumber());
+        lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
+    }
+
+    private void freeLocker(Locker locker){
+        for(int i = 0; i < occupiedNeighbours.size() - 1; i++){
+            if(locker.getLockerNumber() == occupiedNeighbours.get(i))
+                updateNeighbourList(targetLocker);
+        }
+
+        if(focusPersonArrived && locker.getLockerNumber()
+                == targetLocker.getLockerNumber())
+            focusPersonLeft = true;
+        locker.setOccupied(false);
+        locker.setFocusPerson(false);
+        locker.setChange_In(0);
+        locker.setChange_Out(0);
+        locker.setDuration(0);
+        lockers.set(locker.getLockerNumber(), locker);
+    }
+
+    private void updateLockers(){
+        for(int i = 0; i < lockerAmount; i++){
+            dummyLocker.setLocker_number(i);
+            if (timeUp(dummyLocker)){
+                freeLocker(dummyLocker);
+            }
+        }
+    }
+
+    private boolean timeUp(Locker locker){
+        return locker.change_Out <= currentTime;
     }
 
     public boolean checkForVisitor() {
-        double propability = Math.random();
-        if (propability <= 0.1) return true;
-        return false;
+        double probability = Math.random();
+        return probability <= 0.1;
     }
 
 
@@ -95,7 +132,6 @@ public class DevelopingEnvironment {
         }
     }
 
-
     public boolean checkForFocusPerson() {
 
         //TODO focusPersonArrived ist in INIT mit false intialisiert muss ich hier also auf true prüfen oder trotzdem auf false prüfen?
@@ -107,8 +143,15 @@ public class DevelopingEnvironment {
 
     public void simulate() {
 
+        //TODO einfach so reingeschrieben erstmal damit da nicht überall steht never used
         init();
         start();
+        encounter(targetLocker);
+        checkForFocusPerson();
+        checkForVisitor();
+        updateLockers();
+        assignLocker();
+        updateCurrentTime(0);
 
         do {
             //TODO Implementieren
@@ -128,15 +171,10 @@ public class DevelopingEnvironment {
         //TODO Implementieren
     }
 
-    public void timeInterval() {
-        //TODO Implementieren
-    }
-
-    private long getDurationOfStay() {
+    private long getRandomDuration() {
         //TODO Implementieren
         return 1;
     }
-
 
     private int getLockerAmount() {
         //TODO IMPLEMENTIEREN
@@ -148,7 +186,7 @@ public class DevelopingEnvironment {
         return currentTime;
     }
 
-    private void setCurrentTime(long currentTime) {
+    private void updateCurrentTime(long currentTime) {
         //TODO Implementieren
         if(currentTime > openingHours && currentTime < closingTime)
         this.currentTime = currentTime;

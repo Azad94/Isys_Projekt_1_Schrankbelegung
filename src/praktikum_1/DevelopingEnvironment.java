@@ -4,57 +4,35 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-/**
- *
- * Created by Sheraz on 27.10.16.
- */
 public class DevelopingEnvironment {
 
-    int lockerAmount = getLockerAmount();
-    List<Locker> lockers;
-    List<Integer> occupiedNeighbours;
-    List<Integer> freeNeighbours;
-
+    private int lockerAmount = getLockerAmount();
+    private List<Integer> occupiedNeighbours;
+    private List<Integer> freeNeighbours;
     //time the studio opens
-    long openingHours;
+    private long openingHours;
     //time the studio closes
-    long closingTime;
-
-    long currentTime;
-
+    private long closingTime;
+    private long currentTime;
+    private long timeOfArrivalOfFocusPerson;
     //tells if the focus person is in the studio
-    boolean focusPersonArrived;
-
+    private boolean focusPersonArrived;
     //tells how many encouters the focus person had
-    int totalEncounters;
-
-    Locker dummyLocker;
+    private int totalEncounters;
+    private Locker dummyLocker;
     //Locker of the focus person
-    Locker targetLocker;
+    private Locker targetLocker;
 
+    public int encounter(Locker focusLocker) {
+        updateNeighbourList(focusLocker);
 
-    public int getLockerAmount(){
-        //TODO IMPLEMENTIEREN
-        return 0;
-    }
-
-    public long getCurrentTime() {
-        return currentTime;
-    }
-
-    public void setCurrentTime(long currentTime) {
-        this.currentTime = currentTime;
-    }
-
-
-    public int encounter(Locker focusLocker){
-        for(int i = 0; i < occupiedNeighbours.size() - 1; i++){
+        for (int i = 0; i < occupiedNeighbours.size() - 1; i++) {
             dummyLocker.setLocker_number(occupiedNeighbours.get(i));
-            if(dummyLocker.change_In >= focusLocker.change_In - 300
-                    && dummyLocker.change_Out <= focusLocker.change_In){
+            if (dummyLocker.change_In >= focusLocker.change_In - 300
+                    && dummyLocker.change_Out <= focusLocker.change_In) {
                 totalEncounters++;
-            }else if(dummyLocker.change_Out >= focusLocker.change_Out - 300
-                    && dummyLocker.change_Out <= focusLocker.change_Out){
+            } else if (dummyLocker.change_Out >= focusLocker.change_Out - 300
+                    && dummyLocker.change_Out <= focusLocker.change_Out) {
                 totalEncounters++;
             }
         }
@@ -62,97 +40,119 @@ public class DevelopingEnvironment {
         return totalEncounters;
     }
 
-    public void updateNeighbourList(Locker focusLocker){
-        for(int i = 0; i < focusLocker.neighbours.size()-1; i++){
+    private void updateNeighbourList(Locker focusLocker) {
+        occupiedNeighbours = new LinkedList<>();
+        freeNeighbours = new LinkedList<>();
+        for (int i = 0; i < focusLocker.neighbours.size() - 1; i++) {
             dummyLocker.setLocker_number(focusLocker.neighbours.get(i));
-            if(dummyLocker.isOccupied())
+            if (dummyLocker.isOccupied())
                 occupiedNeighbours.add(dummyLocker.getLockerNumber());
             else
                 freeNeighbours.add(dummyLocker.getLockerNumber());
         }
     }
 
-    private void init(){
-        lockers = new LinkedList<Locker>();
+    private void init() {
+        List<Locker> lockers = new LinkedList<>();
         focusPersonArrived = false;
         totalEncounters = 0;
         openingHours = 10;
         closingTime = 22;
+        timeOfArrivalOfFocusPerson = 15;
+        targetLocker = new Locker(0,0,0,0,null);
 
-        for(int i = 0; i < lockerAmount; i++){
-            lockers.add(i, dummyLocker = new Locker(i,0, 0, 0, null));
+        for (int i = 0; i < lockerAmount; i++) {
+            lockers.add(i, dummyLocker = new Locker(i, 0, 0, 0, null));
             dummyLocker.setNeighbours(i, lockerAmount);
         }
-
     }
 
-    public boolean checkForFocusPerson(){
-
-        //TODO die Zeit muss hier angepasst werden auf den richtigen Datentyp
-        if(getCurrentTime() > 1445){
-            return focusPersonArrived = true;
-        }
-        else return focusPersonArrived = false;
-    }
-
-    //TODO starten des Taktes
-    public void start(){
-        setCurrentTime(currentTime + 10);
-    }
-
-    //TODO enden des Taktes
-    public void end(){
-
-    }
-
-    public void simulate(){
-
-        init();
-        start();
-
-        do{
-            //TODO Implementieren
-        }
-        while(currentTime != closingTime);
-
-        end();
-        frequencyScale();
-    }
-
-    public void frequencyScale(){
-        //TODO IMPLEMENTIEREN Häufigkeitsverteilung
-    }
-
-    public void assignLocker(){
+    public void assignLocker() {
         dummyLocker.setLocker_number(randomLockerNumber());
         long duration = getDurationOfStay();
         dummyLocker.setChange_In(getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
         dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
-        if(focusPersonArrived) targetLocker.setLocker_number(dummyLocker.getLockerNumber());
+        if (focusPersonArrived) targetLocker.setLocker_number(dummyLocker.getLockerNumber());
     }
 
-    public long getDurationOfStay(){
-        return 1;
+    public boolean checkForVisitor() {
+        double propability = Math.random();
+        if (propability <= 0.1) return true;
+        return false;
     }
 
-    public void checkForCustom(){
-        //TODO Implementieren
-    }
 
-    public void timeInterval(){
-        //TODO Implementieren
-    }
-
-    public int randomLockerNumber(){
+    private int randomLockerNumber() {
         int lockerNumber;
         Random r = new Random();
 
-        while(true){
+        while (true) {
             lockerNumber = r.nextInt((lockerAmount) + 1);
             dummyLocker.setLocker_number(lockerNumber);
-            if(!dummyLocker.isOccupied()) return lockerNumber;
+            if (!dummyLocker.isOccupied()) return lockerNumber;
         }
+    }
+
+
+    public void simulate() {
+
+        init();
+        start();
+
+        do {
+            //TODO Implementieren
+        }
+        while (currentTime != closingTime);
+
+        end();
+        frequencyScale();
+    }
+
+
+    //TODO starten des Taktes
+    private void start() {
+        setCurrentTime(currentTime + 10);
+    }
+
+    //TODO enden des Taktes
+    private void end() {
+
+    }
+
+    public boolean checkForFocusPerson() {
+
+        //TODO die Zeit muss hier angepasst werden auf den richtigen Datentyp
+        if (getCurrentTime() > timeOfArrivalOfFocusPerson && getCurrentTime() < closingTime) {
+            return focusPersonArrived = true;
+        } else return focusPersonArrived = false;
+    }
+
+    public void timeInterval() {
+        //TODO Implementieren
+    }
+
+    private long getDurationOfStay() {
+        return 1;
+    }
+
+
+    private int getLockerAmount() {
+        //TODO IMPLEMENTIEREN
+        return 0;
+    }
+
+    private long getCurrentTime() {
+        return currentTime;
+    }
+
+    private void setCurrentTime(long currentTime) {
+        if(currentTime > openingHours && currentTime < closingTime)
+        this.currentTime = currentTime;
+    }
+
+    private void frequencyScale() {
+        //TODO IMPLEMENTIEREN Häufigkeitsverteilung
     }
 }

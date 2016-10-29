@@ -25,6 +25,7 @@ public class DevelopingEnvironment {
     //Locker of the focus person
     private Locker targetLocker;
 
+
     public int encounter(Locker focusLocker) {
         updateNeighbourList(focusLocker);
 
@@ -41,6 +42,7 @@ public class DevelopingEnvironment {
         dummyLocker = null;
         return totalEncounters;
     }
+
 
     private void updateNeighbourList(Locker focusLocker) {
         occupiedNeighbours = new LinkedList<>();
@@ -73,6 +75,7 @@ public class DevelopingEnvironment {
         a = a * 60 * 60;
         return a;
     }
+
     public void assignLocker() {
         dummyLocker.setLocker_number(randomLockerNumber());
         long duration = getRandomDuration();

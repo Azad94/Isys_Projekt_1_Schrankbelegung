@@ -6,15 +6,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Malte on 27.10.2016.
- */
 public class Test {
     public static void main(String[] args) throws IOException {
 
         Map<String, String> map = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line = "";
+        DevelopingEnvironment environment = new DevelopingEnvironment();
 
         int gesamt = 0;
         int start = 0;

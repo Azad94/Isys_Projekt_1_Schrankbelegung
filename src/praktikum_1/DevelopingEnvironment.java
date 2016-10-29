@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class DevelopingEnvironment {
 
-    private int lockerAmount;
+    private int lockerAmount = getLockerAmount();
     private List<Locker> lockers;
     private List<Integer> occupiedNeighbours;
     private List<Integer> freeNeighbours;
@@ -54,22 +54,25 @@ public class DevelopingEnvironment {
         }
     }
 
-    public void init() {
-        lockers = new LinkedList<>();
-        focusPersonArrived = false;
-        focusPersonLeft = false;
-        totalEncounters = 0;
+    private void init() {
+       // lockers = new LinkedList<>();
+       // focusPersonArrived = false;
+      //  focusPersonLeft = false;
+       // totalEncounters = 0;
         openingHours = 10;
-        closingTime = 22;
-        timeOfArrivalOfFocusPerson = 15;
-        targetLocker = new Locker(0,0,0,0,null);
+        closingTime = inSec(openingHours); //um die Sekundenanzahl zu erhalten
+        timeOfArrivalOfFocusPerson = inSec(15);
+       // targetLocker = new Locker(0,0,0,0,null);
 
-        for (int i = 0; i < lockerAmount; i++) {
+       /* for (int i = 0; i < lockerAmount; i++) {
             lockers.add(i, dummyLocker = new Locker(i, 0, 0, 0, null));
             dummyLocker.setNeighbours(i, lockerAmount);
-        }
+        }*/
     }
-
+    private long inSec(long a){
+        a = a * 60 * 60;
+        return a;
+    }
     public void assignLocker() {
         dummyLocker.setLocker_number(randomLockerNumber());
         long duration = getRandomDuration();
@@ -141,17 +144,17 @@ public class DevelopingEnvironment {
     }
 
 
-    public void simulate(int lockerAmount) {
+    public void simulate() {
 
         //TODO einfach so reingeschrieben erstmal damit da nicht überall steht never used
         init();
-        start();
+       /* start();
         encounter(targetLocker);
         checkForFocusPerson();
         checkForVisitor();
         updateLockers();
         assignLocker();
-        updateCurrentTime(0);
+        updateCurrentTime(0);*/
 
         do {
             //TODO Implementieren
@@ -161,8 +164,14 @@ public class DevelopingEnvironment {
         end();
         frequencyScale();
     }
-
-
+    // Nur zum testen
+    public long getArrival(){
+        return timeOfArrivalOfFocusPerson;
+    }
+    // Nur zum testen
+    public long getClosingTime(){
+        return closingTime;
+    }
     private void start() {
         //TODO Implementieren
     }

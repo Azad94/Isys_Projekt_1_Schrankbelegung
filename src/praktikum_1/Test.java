@@ -28,8 +28,6 @@ public class Test {
             }
         }
         in.close();
-        System.out.println(gesamt);
-        System.out.println(map.toString());
     }
 
 }

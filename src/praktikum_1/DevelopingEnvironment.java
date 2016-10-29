@@ -96,6 +96,15 @@ public class DevelopingEnvironment {
     }
 
 
+    public boolean checkForFocusPerson() {
+
+        //TODO focusPersonArrived ist in INIT mit false intialisiert muss ich hier also auf true prüfen oder trotzdem auf false prüfen?
+        if (getCurrentTime() > timeOfArrivalOfFocusPerson && !focusPersonArrived) {
+            return focusPersonArrived = true;
+        } else return focusPersonArrived = false;
+    }
+
+
     public void simulate() {
 
         init();
@@ -111,22 +120,12 @@ public class DevelopingEnvironment {
     }
 
 
-    //TODO starten des Taktes
     private void start() {
-        setCurrentTime(currentTime + 10);
+        //TODO Implementieren
     }
 
-    //TODO enden des Taktes
     private void end() {
-
-    }
-
-    public boolean checkForFocusPerson() {
-
-        //TODO die Zeit muss hier angepasst werden auf den richtigen Datentyp
-        if (getCurrentTime() > timeOfArrivalOfFocusPerson && getCurrentTime() < closingTime) {
-            return focusPersonArrived = true;
-        } else return focusPersonArrived = false;
+        //TODO Implementieren
     }
 
     public void timeInterval() {
@@ -134,6 +133,7 @@ public class DevelopingEnvironment {
     }
 
     private long getDurationOfStay() {
+        //TODO Implementieren
         return 1;
     }
 
@@ -144,10 +144,12 @@ public class DevelopingEnvironment {
     }
 
     private long getCurrentTime() {
+        //TODO Implementieren
         return currentTime;
     }
 
     private void setCurrentTime(long currentTime) {
+        //TODO Implementieren
         if(currentTime > openingHours && currentTime < closingTime)
         this.currentTime = currentTime;
     }

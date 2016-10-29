@@ -28,7 +28,15 @@ public class DevelopingEnvironment {
      * Searches the neighbours of one Locker
      * @return
      */
-    private List<Locker> neighbours(){
+    private List<Locker> neighbours(Locker l){
+
+        List<Locker> neighbourList = null;
+
+        Locker dummy_locker;
+
+        if(l.locker_number == 1 || l.locker_number == 2){
+        }
+
         return null;
     }
 }

@@ -9,16 +9,16 @@ import java.util.List;
 
 public class Locker {
 
-    private int locker_number;
-    private boolean occupied = false;
-    private boolean isFocusPerson = false;
-    private int change_In; //eig Time oder sowas
-    private int change_Out; //eig Time oder sowas
-    private int duration; //eig Time oder sowas
-    private List<Integer> neighbours;
+    int locker_number;
+    boolean occupied = false;
+    boolean isFocusPerson = false;
+    long change_In; //eig Time oder sowas
+    long change_Out; //eig Time oder sowas
+    long duration; //eig Time oder sowas
+    List<Integer> neighbours;
 
 
-    public Locker(int locker_number, int change_In, int change_Out, int duration, List<Integer> neighbours) {
+    public Locker(int locker_number, long change_In, long change_Out, long duration, List<Integer> neighbours) {
         this.locker_number = locker_number;
         this.occupied = false;
         this.isFocusPerson = false;
@@ -40,15 +40,15 @@ public class Locker {
         return this.isFocusPerson;
     }
 
-    public int getChange_In() {
+    public long getChange_In() {
         return this.change_In;
     }
 
-    public int getChange_Out() {
+    public long getChange_Out() {
         return change_Out;
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 
@@ -56,15 +56,19 @@ public class Locker {
         return neighbours;
     }
 
-    public void setChange_In(int change_In) {
+    public void setLocker_number(int locker_number) {
+        this.locker_number = locker_number;
+    }
+
+    public void setChange_In(long change_In) {
         this.change_In = change_In;
     }
 
-    public void setChange_Out(int change_Out) {
+    public void setChange_Out(long change_Out) {
         this.change_Out = change_Out;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

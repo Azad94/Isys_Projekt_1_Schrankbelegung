@@ -2,6 +2,7 @@ package praktikum_1;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -11,6 +12,8 @@ public class DevelopingEnvironment {
 
     int lockerAmount = getLockerAmount();
     List<Locker> lockers;
+    List<Integer> occupiedNeighbours;
+    List<Integer> freeNeighbours;
 
     //time the studio opens
     long openingHours;
@@ -26,13 +29,10 @@ public class DevelopingEnvironment {
     int totalEncounters;
 
     Locker dummyLocker;
+    //Locker of the focus person
+    Locker targetLocker;
 
 
-    /**
-     * gets the Amount of Lockers
-     * which are given as param
-     * @return Amount of Lockers
-     */
     public int getLockerAmount(){
         //TODO IMPLEMENTIEREN
         return 0;
@@ -46,27 +46,36 @@ public class DevelopingEnvironment {
         this.currentTime = currentTime;
     }
 
-    /**
-     * Counts the encounter of our
-     * @return
-     */
-    public int encounter(){
-        //TODO IMPLEMENTIEREN
-        return 0;
+
+    public int encounter(Locker focusLocker){
+        for(int i = 0; i < occupiedNeighbours.size() - 1; i++){
+            dummyLocker.setLocker_number(occupiedNeighbours.get(i));
+            if(dummyLocker.change_In >= focusLocker.change_In - 300
+                    && dummyLocker.change_Out <= focusLocker.change_In){
+                totalEncounters++;
+            }else if(dummyLocker.change_Out >= focusLocker.change_Out - 300
+                    && dummyLocker.change_Out <= focusLocker.change_Out){
+                totalEncounters++;
+            }
+        }
+        dummyLocker = null;
+        return totalEncounters;
     }
 
-    /**
-     * Initializes all Locker Objects and set their neighbours
-     * finds its neighbours
-     */
+    public void updateNeighbourList(Locker focusLocker){
+        for(int i = 0; i < focusLocker.neighbours.size()-1; i++){
+            dummyLocker.setLocker_number(focusLocker.neighbours.get(i));
+            if(dummyLocker.isOccupied())
+                occupiedNeighbours.add(dummyLocker.getLockerNumber());
+            else
+                freeNeighbours.add(dummyLocker.getLockerNumber());
+        }
+    }
+
     private void init(){
         lockers = new LinkedList<Locker>();
         focusPersonArrived = false;
         totalEncounters = 0;
-
-        //TODO MALTE
-        //TODO die zeiten festelegenich hab das noch nivht verstanden was Jonas meinte
-        //TODO ich kann aber natürlich nach fragen wenn du das nicht machen möchtest
         openingHours = 10;
         closingTime = 22;
 
@@ -101,14 +110,11 @@ public class DevelopingEnvironment {
         init();
         start();
 
-        while(!focusPersonArrived){
-            //TODO IMPLEMENTIEREN
+        do{
+            //TODO Implementieren
         }
+        while(currentTime != closingTime);
 
-        while(focusPersonArrived){
-            //TODO IMPLEMENTIEREN
-            encounter();
-        }
         end();
         frequencyScale();
     }
@@ -118,7 +124,35 @@ public class DevelopingEnvironment {
     }
 
     public void assignLocker(){
+        dummyLocker.setLocker_number(randomLockerNumber());
+        long duration = getDurationOfStay();
+        dummyLocker.setChange_In(getCurrentTime() + 300);
+        dummyLocker.setChange_Out(duration - 300);
+        dummyLocker.setDuration(duration);
+        dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
+        if(focusPersonArrived) targetLocker.setLocker_number(dummyLocker.getLockerNumber());
+    }
+
+    public long getDurationOfStay(){
+        return 1;
+    }
+
+    public void checkForCustom(){
         //TODO Implementieren
-        dummyLocker.setLocker();
+    }
+
+    public void timeInterval(){
+        //TODO Implementieren
+    }
+
+    public int randomLockerNumber(){
+        int lockerNumber;
+        Random r = new Random();
+
+        while(true){
+            lockerNumber = r.nextInt((lockerAmount) + 1);
+            dummyLocker.setLocker_number(lockerNumber);
+            if(!dummyLocker.isOccupied()) return lockerNumber;
+        }
     }
 }

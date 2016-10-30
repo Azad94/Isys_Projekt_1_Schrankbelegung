@@ -1,6 +1,7 @@
 package praktikum_1;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class DevelopingEnvironment {
@@ -34,16 +35,20 @@ public class DevelopingEnvironment {
     private Locker targetLocker;
     Time t;
     Statistics s = new Statistics();
-
+    Map<String, Float> probabilityMap;
     /**
      * Initializes all Lockers and sets all default values
      */
-    public DevelopingEnvironment(Long day, Long arrival){
+    public DevelopingEnvironment(Long day, Long arrival, Map<String, Float> percentageMap){
         this.openingHours = day;
         this.t = new Time(openingHours);
 
         this.closingTime = t.time;
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
+
+        this.probabilityMap = percentageMap;
+
+        init();
     }
     private void init() {
        // lockers = new LinkedList<>();
@@ -51,9 +56,6 @@ public class DevelopingEnvironment {
         // focusLockerAssigned = false;
       //  focusPersonLeft = false;
        // totalEncounters = 0;
-        openingHours = 10;
-        closingTime = t.inSec(openingHours); //um die Sekundenanzahl zu erhalten
-        timeOfArrivalOfFocusPerson = t.inSec(15);
        // targetLocker = new Locker(0   ,0,0,0,null);
 
        /* for (int i = 0; i < lockerAmount; i++) {

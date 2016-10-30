@@ -7,12 +7,13 @@ import java.util.*;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-
+        long openingHours = 10;
+        long arrival = 5;
         Map<String, String> map = new HashMap<>();
         Map<String, Float> percentageMap = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line = "";
-        DevelopingEnvironment environment = new DevelopingEnvironment();
+        DevelopingEnvironment environment;
 
         int total = 0;
         int start = 0;
@@ -33,18 +34,11 @@ public class Test {
             dummy++;
         }
         in.close();
+
         System.out.println (percentageMap);
         System.out.println(percentageMap.size());
 
-
-
-       /* environment.simulate();
-
-        System.out.println("Arrivaltime:");
-        System.out.println(environment.getArrival());
-        System.out.println("Closingtime:");
-        System.out.println(environment.getClosingTime());*/
+        environment = new DevelopingEnvironment(openingHours, arrival, percentageMap);
     }
-
 
 }

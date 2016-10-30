@@ -1,6 +1,5 @@
 package praktikum_1;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -14,7 +13,7 @@ public class DevelopingEnvironment {
     private List<Integer> occupiedNeighbours;
     //List of free Neighbours of the Focus Person
     private List<Integer> freeNeighbours;
-    //amount of time the studio is open
+    //time the studio opens
     private long openingHours;
     //time the studio closes
     private long closingTime;
@@ -33,6 +32,8 @@ public class DevelopingEnvironment {
     private Locker dummyLocker;
     //Locker of the Focus Person
     private Locker targetLocker;
+    Time t = new Time();
+    Statistics s = new Statistics();
 
     /**
      * Initializes all Lockers and sets all default values
@@ -44,8 +45,8 @@ public class DevelopingEnvironment {
       //  focusPersonLeft = false;
        // totalEncounters = 0;
         openingHours = 10;
-        closingTime = inSec(openingHours); //um die Sekundenanzahl zu erhalten
-        timeOfArrivalOfFocusPerson = inSec(15)-closingTime;
+        closingTime = t.inSec(openingHours); //um die Sekundenanzahl zu erhalten
+        timeOfArrivalOfFocusPerson = t.inSec(15);
        // targetLocker = new Locker(0,0,0,0,null);
 
        /* for (int i = 0; i < lockerAmount; i++) {
@@ -54,15 +55,17 @@ public class DevelopingEnvironment {
         }*/
     }
 
+    //TODO HABE ICH TIME GEPACKT
     /**
      *
      * @param a
      * @return
-     */
+     *
     private long inSec(long a){
         a = a * 60 * 60;
         return a;
     }
+    */
 
     /**
      * Assignes a random locker to a Person
@@ -76,7 +79,7 @@ public class DevelopingEnvironment {
             dummyLocker.updateNeighbourList(dummyLocker, occupiedNeighbours,freeNeighbours);
             focusLockerAssigned = true;
         }
-        dummyLocker.setChange_In(getCurrentTime() + 300);
+        dummyLocker.setChange_In(t.getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
@@ -150,11 +153,12 @@ public class DevelopingEnvironment {
      * Person to be entering the Studio
      */
     public void checkForFocusPerson() {
-        if (getCurrentTime() > timeOfArrivalOfFocusPerson
+        if (t.getCurrentTime() > timeOfArrivalOfFocusPerson
                 && focusPersonArrived
                     && focusLockerAssigned) {
              focusPersonArrived = true;
         } else  focusPersonArrived = false;
+
     }
 
     /**
@@ -162,7 +166,7 @@ public class DevelopingEnvironment {
      */
     public void simulate() {
         routine();
-        timeInterval();
+        t.timeInterval();
     }
 
     /**
@@ -180,10 +184,6 @@ public class DevelopingEnvironment {
         updateLockers();
     }
 
-    public void timeInterval(){
-        currentTime = currentTime + 10;
-    }
-
     // Nur zum testen
     public long getArrival(){
         return timeOfArrivalOfFocusPerson;
@@ -194,42 +194,19 @@ public class DevelopingEnvironment {
     }
 
     private long getRandomDuration() {
-        Random rnd = new Random();
-
-        float chance = rnd.nextFloat();
-
+        //TODO Implementieren
         return 1;
     }
-    // wird der Lockeramount nicht einfach festgelegt?
+
     private int getLockerAmount() {
         //TODO IMPLEMENTIEREN
         return 0;
     }
 
-    private long getCurrentTime() {
-        //TODO Implementieren
-        return currentTime;
-    }
-    private void personArrives(){
-        Random rnd = new Random();
 
-        float chance = rnd.nextFloat();
-        if(chance <= 0.10f){
-           assignLocker();
-        }
-    }
-    //ist die nicht überflüssig?
     private void updateCurrentTime(long currentTime) {
         //TODO Implementieren
         if(currentTime > openingHours && currentTime < closingTime)
         this.currentTime = currentTime;
-    }
-
-    private void frequencyScale() {
-        //TODO IMPLEMENTIEREN Häufigkeitsverteilung
-    }
-
-    public void recordData(){
-
     }
 }

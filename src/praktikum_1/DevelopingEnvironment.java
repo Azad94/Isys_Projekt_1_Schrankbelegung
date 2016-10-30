@@ -168,6 +168,7 @@ public class DevelopingEnvironment {
     public void simulate() {
         routine();
         t.timeInterval();
+        //if(FERTIG) s.recordData(1);
     }
 
     /**

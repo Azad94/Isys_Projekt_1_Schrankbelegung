@@ -54,8 +54,6 @@ public class Statistics {
         }
     }
 
-
-
     public long getRandomDuration() {
         //TODO Implementieren
         return 1;

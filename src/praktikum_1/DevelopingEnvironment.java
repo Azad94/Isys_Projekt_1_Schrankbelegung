@@ -32,6 +32,8 @@ public class DevelopingEnvironment {
     private Locker dummyLocker;
     //Locker of the Focus Person
     private Locker targetLocker;
+    Time t = new Time();
+    Statistics s = new Statistics();
 
     /**
      * Initializes all Lockers and sets all default values
@@ -43,8 +45,8 @@ public class DevelopingEnvironment {
       //  focusPersonLeft = false;
        // totalEncounters = 0;
         openingHours = 10;
-        closingTime = inSec(openingHours); //um die Sekundenanzahl zu erhalten
-        timeOfArrivalOfFocusPerson = inSec(15);
+        closingTime = t.inSec(openingHours); //um die Sekundenanzahl zu erhalten
+        timeOfArrivalOfFocusPerson = t.inSec(15);
        // targetLocker = new Locker(0,0,0,0,null);
 
        /* for (int i = 0; i < lockerAmount; i++) {
@@ -53,15 +55,17 @@ public class DevelopingEnvironment {
         }*/
     }
 
+    //TODO HABE ICH TIME GEPACKT
     /**
      *
      * @param a
      * @return
-     */
+     *
     private long inSec(long a){
         a = a * 60 * 60;
         return a;
     }
+    */
 
     /**
      * Assignes a random locker to a Person
@@ -75,7 +79,7 @@ public class DevelopingEnvironment {
             dummyLocker.updateNeighbourList(dummyLocker, occupiedNeighbours,freeNeighbours);
             focusLockerAssigned = true;
         }
-        dummyLocker.setChange_In(getCurrentTime() + 300);
+        dummyLocker.setChange_In(t.getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
@@ -149,11 +153,12 @@ public class DevelopingEnvironment {
      * Person to be entering the Studio
      */
     public void checkForFocusPerson() {
-        if (getCurrentTime() > timeOfArrivalOfFocusPerson
+        if (t.getCurrentTime() > timeOfArrivalOfFocusPerson
                 && focusPersonArrived
                     && focusLockerAssigned) {
              focusPersonArrived = true;
         } else  focusPersonArrived = false;
+
     }
 
     /**
@@ -161,7 +166,7 @@ public class DevelopingEnvironment {
      */
     public void simulate() {
         routine();
-        timeInterval();
+        t.timeInterval();
     }
 
     /**
@@ -177,10 +182,6 @@ public class DevelopingEnvironment {
         if(focusPersonLeft)
             totalEncounters = targetLocker.encounter(targetLocker, occupiedNeighbours,freeNeighbours);
         updateLockers();
-    }
-
-    public void timeInterval(){
-        //TODO Implementieren
     }
 
     // Nur zum testen
@@ -202,22 +203,10 @@ public class DevelopingEnvironment {
         return 0;
     }
 
-    private long getCurrentTime() {
-        //TODO Implementieren
-        return currentTime;
-    }
 
     private void updateCurrentTime(long currentTime) {
         //TODO Implementieren
         if(currentTime > openingHours && currentTime < closingTime)
         this.currentTime = currentTime;
-    }
-
-    private void frequencyScale() {
-        //TODO IMPLEMENTIEREN Häufigkeitsverteilung
-    }
-
-    public void recordData(){
-
     }
 }

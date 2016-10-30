@@ -10,7 +10,7 @@ public class DevelopingEnvironment {
     private List<Locker> lockers;
     private List<Integer> occupiedNeighbours;
     private List<Integer> freeNeighbours;
-    //time the studio opens
+    //amount of time the studio is open
     private long openingHours;
     //time the studio closes
     private long closingTime;
@@ -61,7 +61,7 @@ public class DevelopingEnvironment {
        // totalEncounters = 0;
         openingHours = 10;
         closingTime = inSec(openingHours); //um die Sekundenanzahl zu erhalten
-        timeOfArrivalOfFocusPerson = inSec(15);
+        timeOfArrivalOfFocusPerson = inSec(15)-closingTime;
        // targetLocker = new Locker(0,0,0,0,null);
 
        /* for (int i = 0; i < lockerAmount; i++) {
@@ -156,13 +156,13 @@ public class DevelopingEnvironment {
         assignLocker();
         updateCurrentTime(0);*/
 
-        do {
+        /*do {
             //TODO Implementieren
         }
         while (currentTime != closingTime);
 
         end();
-        frequencyScale();
+        frequencyScale();*/
     }
     // Nur zum testen
     public long getArrival(){
@@ -194,7 +194,14 @@ public class DevelopingEnvironment {
         //TODO Implementieren
         return currentTime;
     }
+    private void personArrives(){
+        Random rnd = new Random();
 
+        float chance = rnd.nextFloat();
+        if(chance <= 0.10f){
+            //TODO Person einen Locker zuweisen
+        }
+    }
     private void updateCurrentTime(long currentTime) {
         //TODO Implementieren
         if(currentTime > openingHours && currentTime < closingTime)

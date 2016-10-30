@@ -72,7 +72,7 @@ public class DevelopingEnvironment {
      */
     public void assignLocker() {
         dummyLocker.setLocker_number(randomLockerNumber());
-        long duration = getRandomDuration();
+        long duration = s.getRandomDuration();
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(dummyLocker.getLockerNumber());
@@ -83,6 +83,7 @@ public class DevelopingEnvironment {
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
+        s.updateDurationFrequency(duration);
     }
 
     /**
@@ -167,6 +168,7 @@ public class DevelopingEnvironment {
     public void simulate() {
         routine();
         t.timeInterval();
+        //if(FERTIG) s.saveData(0);
     }
 
     /**
@@ -193,10 +195,6 @@ public class DevelopingEnvironment {
         return closingTime;
     }
 
-    private long getRandomDuration() {
-        //TODO Implementieren
-        return 1;
-    }
 
     private int getLockerAmount() {
         //TODO IMPLEMENTIEREN

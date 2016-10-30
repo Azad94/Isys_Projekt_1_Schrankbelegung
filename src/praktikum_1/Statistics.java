@@ -3,25 +3,22 @@ package praktikum_1;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Statistics {
 
     Map<Long, Integer> durationFrequency = new HashMap<>();
     File file;
-    StringBuilder builder = new StringBuilder();
 
     public Statistics() {
     }
 
-    public void frequencyScale(){
-
-    }
-
+    /**
+     * Updates the frequency of the duration
+     * recently assigned.
+     * @param durationTime key to search for in the map
+     */
     public void updateDurationFrequency(long durationTime){
        //braucht man diese If oder gehen wir davon einfach aus das man nur Zeiten wählen
         //kann die es auch nur wirklich gibt
@@ -29,8 +26,27 @@ public class Statistics {
             durationFrequency.put(durationTime, durationFrequency.get(durationTime) + 1);
     }
 
-    public void recordData(int simulatingDay){
+    /**
+     * Writes the collected duration frequencies into a file
+     * @param simulatingDay day of simulation
+     */
+    public void saveData(int simulatingDay){
+        file  = new File("Simulationstag_Nr." + simulatingDay + ".txt");
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(stringRepresentation());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * Creates a String representation of the map
+     * with the duration frequencies
+     */
+    public String stringRepresentation(){
+
+        StringBuilder builder = new StringBuilder();
         builder.append("Belegungszeit (in Minuten)");
         builder.append(", ");
         builder.append("Häufigkeit des Auftretens");
@@ -41,21 +57,14 @@ public class Statistics {
             builder.append(printMap.getValue());
             builder.append("\r\n");
         }
-        logFile(simulatingDay);
-    }
-
-    public void logFile(int simulatingDay){
-        file  = new File("Belegungszeiten_" + simulatingDay + ".txt");
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(builder.toString().trim());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return builder.toString().trim();
     }
 
     public long getRandomDuration() {
-        //TODO Implementieren
         return 1;
+    }
+
+    public void frequencyScale(){
+
     }
 }

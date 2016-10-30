@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Statistics {
 
+    //list of all durations possible, extractet from the txt file Belegungszeiten at the beginning
     List<Integer> durationTime;
 
     public Statistics() {
@@ -13,7 +14,8 @@ public class Statistics {
 
     }
 
-    public void recordData(){
+    public void recordData(long duration){
+
 
     }
 

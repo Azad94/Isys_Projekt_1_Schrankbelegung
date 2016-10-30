@@ -6,57 +6,41 @@ import java.util.Random;
 
 public class DevelopingEnvironment {
 
+    //Amount of Lockers intialized
     private int lockerAmount = getLockerAmount();
+    //List of intialized Lockers
     private List<Locker> lockers;
+    //List of occupied Neighbours of the Focus Person
     private List<Integer> occupiedNeighbours;
+    //List of free Neighbours of the Focus Person
     private List<Integer> freeNeighbours;
     //amount of time the studio is open
     private long openingHours;
     //time the studio closes
     private long closingTime;
     private long currentTime;
+    //time the Focus Person is expected to come
     private long timeOfArrivalOfFocusPerson;
-    //tells if the focus person is in the studio
+    //shows if the Focus Person is in the studio
     private boolean focusPersonArrived;
+    //shows if the Focus Person has been assigned a Locker
+    private boolean focusLockerAssigned;
+    //shows if the Focus Person is gone
     private boolean focusPersonLeft;
-    //tells how many encouters the focus person had
+    //shows how many encounters the Focus Person had
     private int totalEncounters;
+    //Locker for multiple uses
     private Locker dummyLocker;
-    //Locker of the focus person
+    //Locker of the Focus Person
     private Locker targetLocker;
 
-    public int encounter(Locker focusLocker) {
-        updateNeighbourList(focusLocker);
-
-        for (int i = 0; i < occupiedNeighbours.size() - 1; i++) {
-            dummyLocker.setLocker_number(occupiedNeighbours.get(i));
-            if (dummyLocker.change_In >= focusLocker.change_In - 300
-                    && dummyLocker.change_Out <= focusLocker.change_In) {
-                totalEncounters++;
-            } else if (dummyLocker.change_Out >= focusLocker.change_Out - 300
-                    && dummyLocker.change_Out <= focusLocker.change_Out) {
-                totalEncounters++;
-            }
-        }
-        dummyLocker = null;
-        return totalEncounters;
-    }
-
-    private void updateNeighbourList(Locker focusLocker) {
-        occupiedNeighbours = new LinkedList<>();
-        freeNeighbours = new LinkedList<>();
-        for (int i = 0; i < focusLocker.neighbours.size() - 1; i++) {
-            dummyLocker.setLocker_number(focusLocker.neighbours.get(i));
-            if (dummyLocker.isOccupied())
-                occupiedNeighbours.add(dummyLocker.getLockerNumber());
-            else
-                freeNeighbours.add(dummyLocker.getLockerNumber());
-        }
-    }
-
+    /**
+     * Initializes all Lockers and sets all default values
+     */
     private void init() {
        // lockers = new LinkedList<>();
        // focusPersonArrived = false;
+        // focusLockerAssigned = false;
       //  focusPersonLeft = false;
        // totalEncounters = 0;
         openingHours = 10;
@@ -65,46 +49,60 @@ public class DevelopingEnvironment {
        // targetLocker = new Locker(0,0,0,0,null);
 
        /* for (int i = 0; i < lockerAmount; i++) {
-            lockers.add(i, dummyLocker = new Locker(i, 0, 0, 0, null));
+            lockers.add(i, dummyLocker = new Locker(i, false, 0, 0, 0, null));
             dummyLocker.setNeighbours(i, lockerAmount);
         }*/
     }
+
+    /**
+     *
+     * @param a
+     * @return
+     */
     private long inSec(long a){
         a = a * 60 * 60;
         return a;
     }
+
+    /**
+     * Assignes a random locker to a Person
+     */
     public void assignLocker() {
         dummyLocker.setLocker_number(randomLockerNumber());
         long duration = getRandomDuration();
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(dummyLocker.getLockerNumber());
-            dummyLocker.setFocusPerson(true);
+            dummyLocker.updateNeighbourList(dummyLocker, occupiedNeighbours,freeNeighbours);
+            focusLockerAssigned = true;
         }
-        else dummyLocker.setFocusPerson(false);
         dummyLocker.setChange_In(getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
     }
 
+    /**
+     * Frees the locker if the Person using it has left the Studio
+     * @param locker locker to be freed
+     */
     private void freeLocker(Locker locker){
         for(int i = 0; i < occupiedNeighbours.size() - 1; i++){
             if(locker.getLockerNumber() == occupiedNeighbours.get(i))
-                updateNeighbourList(targetLocker);
+                dummyLocker.updateNeighbourList(dummyLocker, occupiedNeighbours,freeNeighbours);
         }
 
         if(focusPersonArrived && locker.getLockerNumber()
                 == targetLocker.getLockerNumber())
             focusPersonLeft = true;
-        locker.setOccupied(false);
-        locker.setFocusPerson(false);
-        locker.setChange_In(0);
-        locker.setChange_Out(0);
-        locker.setDuration(0);
+        locker.releaseLocker();
         lockers.set(locker.getLockerNumber(), locker);
     }
 
+    /**
+     * Checks if the duration of a Locker to be occupied
+     * is up and frees it if so
+     */
     private void updateLockers(){
         for(int i = 0; i < lockerAmount; i++){
             dummyLocker.setLocker_number(i);
@@ -114,16 +112,28 @@ public class DevelopingEnvironment {
         }
     }
 
+    /**
+     * Checks if the time for a Locker to be occupied is up
+     * @param locker Locker to be checked
+     * @return true if the time is up
+     */
     private boolean timeUp(Locker locker){
         return locker.change_Out <= currentTime;
     }
 
+    /**
+     * Checks if a Visitor is entering the studio
+     * @return true if a Visitor is coming
+     */
     public boolean checkForVisitor() {
         double probability = Math.random();
         return probability <= 0.1;
     }
 
-
+    /**
+     *
+     * @return random number of Locker to be assigned
+     */
     private int randomLockerNumber() {
         int lockerNumber;
         Random r = new Random();
@@ -135,35 +145,45 @@ public class DevelopingEnvironment {
         }
     }
 
-    public boolean checkForFocusPerson() {
-
-        //TODO focusPersonArrived ist in INIT mit false intialisiert muss ich hier also auf true prüfen oder trotzdem auf false prüfen?
-        if (getCurrentTime() > timeOfArrivalOfFocusPerson && !focusPersonArrived) {
-            return focusPersonArrived = true;
-        } else return focusPersonArrived = false;
+    /**
+     * Checks if the time is due for the Focus
+     * Person to be entering the Studio
+     */
+    public void checkForFocusPerson() {
+        if (getCurrentTime() > timeOfArrivalOfFocusPerson
+                && focusPersonArrived
+                    && focusLockerAssigned) {
+             focusPersonArrived = true;
+        } else  focusPersonArrived = false;
     }
 
-
+    /**
+     * Simulates the whole Environment/Scenario
+     */
     public void simulate() {
-
-        //TODO einfach so reingeschrieben erstmal damit da nicht überall steht never used
-        init();
-       /* start();
-        encounter(targetLocker);
-        checkForFocusPerson();
-        checkForVisitor();
-        updateLockers();
-        assignLocker();
-        updateCurrentTime(0);*/
-
-        /*do {
-            //TODO Implementieren
-        }
-        while (currentTime != closingTime);
-
-        end();
-        frequencyScale();*/
+        routine();
+        timeInterval();
     }
+
+    /**
+     * Settles the Procedure of the Simulation
+     */
+    private void routine(){
+        if(!checkForVisitor()){
+            updateLockers();
+            return;
+        }
+        checkForFocusPerson();
+        assignLocker();
+        if(focusPersonLeft)
+            totalEncounters = targetLocker.encounter(targetLocker, occupiedNeighbours,freeNeighbours);
+        updateLockers();
+    }
+
+    public void timeInterval(){
+        //TODO Implementieren
+    }
+
     // Nur zum testen
     public long getArrival(){
         return timeOfArrivalOfFocusPerson;
@@ -171,13 +191,6 @@ public class DevelopingEnvironment {
     // Nur zum testen
     public long getClosingTime(){
         return closingTime;
-    }
-    private void start() {
-        //TODO Implementieren
-    }
-
-    private void end() {
-        //TODO Implementieren
     }
 
     private long getRandomDuration() {
@@ -210,5 +223,9 @@ public class DevelopingEnvironment {
 
     private void frequencyScale() {
         //TODO IMPLEMENTIEREN Häufigkeitsverteilung
+    }
+
+    public void recordData(){
+
     }
 }

@@ -181,7 +181,7 @@ public class DevelopingEnvironment {
     }
 
     public void timeInterval(){
-        //TODO Implementieren
+        currentTime = currentTime + 10;
     }
 
     // Nur zum testen
@@ -194,10 +194,13 @@ public class DevelopingEnvironment {
     }
 
     private long getRandomDuration() {
-        //TODO Implementieren
+        Random rnd = new Random();
+
+        float chance = rnd.nextFloat();
+
         return 1;
     }
-
+    // wird der Lockeramount nicht einfach festgelegt?
     private int getLockerAmount() {
         //TODO IMPLEMENTIEREN
         return 0;
@@ -212,9 +215,10 @@ public class DevelopingEnvironment {
 
         float chance = rnd.nextFloat();
         if(chance <= 0.10f){
-            //TODO Person einen Locker zuweisen
+           assignLocker();
         }
     }
+    //ist die nicht überflüssig?
     private void updateCurrentTime(long currentTime) {
         //TODO Implementieren
         if(currentTime > openingHours && currentTime < closingTime)

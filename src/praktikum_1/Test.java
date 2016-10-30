@@ -37,13 +37,13 @@ public class Test {
         System.out.println(percentageMap.size());
 
 
-        DevelopingEnvironment environment = new DevelopingEnvironment();
-        environment.simulate();
+
+       /* environment.simulate();
 
         System.out.println("Arrivaltime:");
         System.out.println(environment.getArrival());
         System.out.println("Closingtime:");
-        System.out.println(environment.getClosingTime());
+        System.out.println(environment.getClosingTime());*/
     }
 
 

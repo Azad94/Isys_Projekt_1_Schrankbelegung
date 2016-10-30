@@ -3,17 +3,24 @@ package praktikum_1;
 public class Time {
 
     long time;
+    long currentTime;
 
-    public Time() {
+    public Time(long dayTime) {
+        this.currentTime = 0;
+        this.time = inSec(dayTime);
     }
 
     public void timeInterval(){
-        //TODO Implementieren
+        if(currentTime<time) {
+            currentTime += 10;
+        }
     }
 
     public long getCurrentTime() {
-        //TODO Implementieren
-        return 0;
+        return currentTime;
+    }
+    public long getDayTime() {
+        return time;
     }
 
     public long inSec(long a){

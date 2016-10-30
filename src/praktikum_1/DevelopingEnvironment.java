@@ -32,12 +32,19 @@ public class DevelopingEnvironment {
     private Locker dummyLocker;
     //Locker of the Focus Person
     private Locker targetLocker;
-    Time t = new Time();
+    Time t;
     Statistics s = new Statistics();
 
     /**
      * Initializes all Lockers and sets all default values
      */
+    public DevelopingEnvironment(Long day, Long arrival){
+        this.openingHours = day;
+        this.t = new Time(openingHours);
+
+        this.closingTime = t.time;
+        this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
+    }
     private void init() {
        // lockers = new LinkedList<>();
        // focusPersonArrived = false;
@@ -47,7 +54,7 @@ public class DevelopingEnvironment {
         openingHours = 10;
         closingTime = t.inSec(openingHours); //um die Sekundenanzahl zu erhalten
         timeOfArrivalOfFocusPerson = t.inSec(15);
-       // targetLocker = new Locker(0,0,0,0,null);
+       // targetLocker = new Locker(0   ,0,0,0,null);
 
        /* for (int i = 0; i < lockerAmount; i++) {
             lockers.add(i, dummyLocker = new Locker(i, false, 0, 0, 0, null));

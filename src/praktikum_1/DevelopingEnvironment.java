@@ -47,7 +47,7 @@ public class DevelopingEnvironment {
 
         this.closingTime = t.time;
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
-        //TODO Fehler vom mergen ?
+
         this.probabilityMap = percentageMap;
         //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
@@ -65,6 +65,8 @@ public class DevelopingEnvironment {
         dummyLocker.setLocker_number(randomLockerNumber());
         //TODO MUSS WIEDER EINGEFÜGT WERDEN
         //long duration = s.getRandomDuration();
+        long duration = getRandomDuration();
+        System.out.println("Guest Duration: " + duration);
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(dummyLocker.getLockerNumber());
@@ -73,8 +75,8 @@ public class DevelopingEnvironment {
         }
         System.out.println("FOCUS PERSON ARRIVED: " + focusPersonArrived);
         dummyLocker.setChange_In(t.getCurrentTime() + 300);
-        //dummyLocker.setChange_Out(duration - 300);
-        //dummyLocker.setDuration(duration);
+        dummyLocker.setChange_Out(duration - 300);
+        dummyLocker.setDuration(duration);
 
         //TODO das kann dann raus
         dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
@@ -100,7 +102,7 @@ public class DevelopingEnvironment {
 
             //  (rndFloat <= percentageArray.get(q)) ? System.out.println(percentageMap.get(percentageArray.get(q))) :
             if(rndFloat<=percentageArray.get(q) && rndFloat>compare){
-               guestTime =  Long.parseLong(probabilityMap.get(percentageArray.get(q)));
+               guestTime = Long.parseLong(probabilityMap.get(percentageArray.get(q)));
             }
             compare = percentageArray.get(q);
         }
@@ -223,8 +225,10 @@ public class DevelopingEnvironment {
     public void simulate() {
         //TODO hier war eine array out of Bound siehe screenshot
         System.out.println("ENTER SIMULATE");
-        routine();
-        t.timeInterval();
+        while(t.currentTime<t.time){
+            routine();
+            t.timeInterval();
+        }
         //TODO wenn de Tag vorbei ist soll diese Methode aufgerufen werden
         s.saveData(simulationDay);
     }

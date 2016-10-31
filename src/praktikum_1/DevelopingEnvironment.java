@@ -151,11 +151,9 @@ public class DevelopingEnvironment {
      * @return random number of Locker to be assigned
      */
     private int randomLockerNumber() {
-        //TODO liste überprüfen
         int lockerNumber;
         Random r = new Random();
         Locker l;
-        dummyLocker = new Locker(0, false, 0, 0, 0, null);
 
         while (true) {
             lockerNumber = r.nextInt(lockerAmount);
@@ -201,26 +199,17 @@ public class DevelopingEnvironment {
        }
 
        dummyLocker.releaseLocker();
-/**
-        for (int i = 0; i < lockers.size(); i++) {
-            if(dummyLocker.neighbours == null){
-                System.out.println("NR -- " + i + " ist leer");
-            }
-        }
-         **/
     }
 
     /**
      * Simulates the whole Environment/Scenario
      */
     public void simulate() {
-        //TODO hier war eine array out of Bound siehe screenshot
         System.out.println("ENTER SIMULATE");
         while(t.currentTime<t.time){
             routine();
             t.timeInterval();
         }
-        //TODO wenn de Tag vorbei ist soll diese Methode aufgerufen werden
         s.saveData(simulationDay);
     }
 
@@ -238,22 +227,10 @@ public class DevelopingEnvironment {
             return;
         }
         System.out.println("INCOMING PERSON");
-        //TODO hier war eine array out of Bound siehe screenshot
         checkForFocusPerson();
         assignLocker();
         if(focusPersonLeft)
             totalEncounters = targetLocker.encounter(targetLocker, occupiedNeighbours,freeNeighbours);
         updateLockers();
     }
-
-    /**
-     * Resets necessary parameters
-     *
-    public void reset(){
-        //save statistics before reset
-        s.saveData(simulationDay);
-        lockers.clear();
-        lockers = null;
-        targetLocker = null;
-    }*/
 }

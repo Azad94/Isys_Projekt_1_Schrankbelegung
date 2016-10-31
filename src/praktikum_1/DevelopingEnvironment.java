@@ -205,7 +205,6 @@ public class DevelopingEnvironment {
            dummyLocker = new Locker(i, false, 0, 0, 0, null);
            dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
            lockers.add(i, dummyLocker);
-           System.out.println("LOCKER "+ dummyLocker.getLockerNumber()+ " ERSTELLT MIT DEN NACHBARN " + dummyLocker.neighbours.toString());
        }
 
        dummyLocker.releaseLocker();

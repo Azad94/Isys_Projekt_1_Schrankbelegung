@@ -45,7 +45,7 @@ public class DevelopingEnvironment {
         this.openingHours = day;
         this.t = new Time(openingHours);
 
-        this.closingTime = t.time;
+        this.closingTime = t.getDayTime();
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
 
         this.probabilityMap = percentageMap;
@@ -71,7 +71,6 @@ public class DevelopingEnvironment {
         l = lockers.get(number);
         System.out.println("DAS IST DER ASSIGN dummy  " + l.toString());
         l.setLocker_number(randomLockerNumber());
-        long duration = getRandomDuration() * 60;
         System.out.println("Guest Duration: " + duration);
         l.setOccupied(true);
         if (focusPersonArrived) {
@@ -84,7 +83,6 @@ public class DevelopingEnvironment {
         dummyLocker.setChange_In(t.getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
-        System.out.println("CURRENT TIME: " + t.getCurrentTime());
 
         l.setChange_In(t.getCurrentTime() + 300);
         l.setChange_Out(t.getCurrentTime() + duration - 300);

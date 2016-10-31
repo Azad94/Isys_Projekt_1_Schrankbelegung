@@ -3,7 +3,6 @@ package praktikum_1;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
 
 public class Test {
@@ -36,7 +35,6 @@ public class Test {
             }
         }
         mapKeys = new ArrayList<>(map.keySet());
-        List<Float> percentageArray;
         float percentageValue = 0.0f;
         while(dummy<map.size()){
             float floatDummy = Float.parseFloat(map.get(mapKeys.get(dummy)))/(float)total;
@@ -45,10 +43,6 @@ public class Test {
             dummy++;
         }
         in.close();
-
-        //System.out.println (percentageMap);
-        //System.out.println(percentageMap.size());
-
 
         for(int i = 0; i <= daysOfSimulation-1;i++){
             System.out.println("LETS START");

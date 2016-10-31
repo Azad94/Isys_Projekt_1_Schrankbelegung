@@ -60,7 +60,8 @@ public class DevelopingEnvironment {
      * Assignes a random locker to a Person
      */
     public void assignLocker() {
-        dummyLocker = new Locker(0, false, 0, 0, 0, null);
+        int number = randomLockerNumber();
+        dummyLocker = lockers.get(number);
         dummyLocker.setLocker_number(randomLockerNumber());
         long duration = getRandomDuration();
         System.out.println("Guest Duration: " + duration);
@@ -75,14 +76,13 @@ public class DevelopingEnvironment {
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
 
-        //TODO kommentier ich das aus und lasse es in INIT() sind die nachbarn immer NULL
+        //TODO das kann dann raus
         dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
 
         //TODO hier war eine array out of Bound siehe screenshot
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
         //s.updateDurationFrequency(duration);
         System.out.println("\nASSIGNED LOCKER IS " + dummyLocker.toString());
-        System.out.println("˜\nABER IST ER AUCH GESPEICHERT " + lockers.get(dummyLocker.getLockerNumber()));
     }
 
     /**
@@ -205,6 +205,7 @@ public class DevelopingEnvironment {
            dummyLocker = new Locker(i, false, 0, 0, 0, null);
            dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
            lockers.add(i, dummyLocker);
+           System.out.println("LOCKER "+ dummyLocker.getLockerNumber()+ " ERSTELLT MIT DEN NACHBARN " + dummyLocker.neighbours.toString());
        }
 
        dummyLocker.releaseLocker();

@@ -39,7 +39,7 @@ public class DevelopingEnvironment {
     /**
      * Initializes all Lockers and sets all default values
      */
-    public DevelopingEnvironment(int lockerAmount, int simulationDay, Long day, Long arrival, Map<String, Float> percentageMap){
+    public DevelopingEnvironment(int lockerAmount, int simulationDay, Long day, Long arrival, Map<Float, String> percentageMap){
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
         this.openingHours = day;
@@ -47,7 +47,7 @@ public class DevelopingEnvironment {
 
         this.closingTime = t.time;
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
-
+        //TODO Fehler vom mergen ?
         this.probabilityMap = percentageMap;
         //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
@@ -60,9 +60,11 @@ public class DevelopingEnvironment {
      * Assignes a random locker to a Person
      */
     public void assignLocker() {
-        dummyLocker = new Locker(0, false, 0, 0, 0, null);
+        int number = randomLockerNumber();
+        dummyLocker = lockers.get(number);
         dummyLocker.setLocker_number(randomLockerNumber());
-        long duration = s.getRandomDuration();
+        //TODO MUSS WIEDER EINGEFÜGT WERDEN
+        //long duration = s.getRandomDuration();
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(dummyLocker.getLockerNumber());
@@ -74,14 +76,13 @@ public class DevelopingEnvironment {
         //dummyLocker.setChange_Out(duration - 300);
         //dummyLocker.setDuration(duration);
 
-        //TODO kommentier ich das aus und lasse es in INIT() sind die nachbarn immer NULL
+        //TODO das kann dann raus
         dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
 
         //TODO hier war eine array out of Bound siehe screenshot
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
         //s.updateDurationFrequency(duration);
         System.out.println("\nASSIGNED LOCKER IS " + dummyLocker.toString());
-        System.out.println("˜\nABER IST ER AUCH GESPEICHERT " + lockers.get(dummyLocker.getLockerNumber()));
     }
 
     /**
@@ -204,6 +205,7 @@ public class DevelopingEnvironment {
            dummyLocker = new Locker(i, false, 0, 0, 0, null);
            dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
            lockers.add(i, dummyLocker);
+           System.out.println("LOCKER "+ dummyLocker.getLockerNumber()+ " ERSTELLT MIT DEN NACHBARN " + dummyLocker.neighbours.toString());
        }
 
        dummyLocker.releaseLocker();

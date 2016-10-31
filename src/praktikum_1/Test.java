@@ -35,7 +35,6 @@ public class Test {
                 total2 += Float.parseFloat(parts[1])/99999.0f;
             }
         }
-
         mapKeys = new ArrayList<>(map.keySet());
         List<Float> percentageArray;
         float percentageValue = 0.0f;

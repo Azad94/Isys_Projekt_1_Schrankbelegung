@@ -11,7 +11,7 @@ public class Test {
         long openingHours = 30;
         long arrival = 10;
         Map<String, String> map = new HashMap<>();
-        Map<Float, String> percentageMap = new HashMap<>();
+        Map<Float, Long> percentageMap = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line = "";
         DevelopingEnvironment environment;
@@ -41,7 +41,7 @@ public class Test {
         while(dummy<map.size()){
             float floatDummy = Float.parseFloat(map.get(mapKeys.get(dummy)))/(float)total;
             percentageValue += floatDummy;
-            percentageMap.put(percentageValue, mapKeys.get(dummy));
+            percentageMap.put(percentageValue, Long.parseLong(mapKeys.get(dummy))*60);
             dummy++;
         }
         in.close();

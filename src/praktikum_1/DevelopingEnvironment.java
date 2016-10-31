@@ -34,12 +34,12 @@ public class DevelopingEnvironment {
     private Locker targetLocker;
     Time t;
     Statistics s = new Statistics();
-    Map<Float, String> probabilityMap;
+    Map<Float, Long> probabilityMap;
     List<Float> percentageArray;
     /**
      * Initializes all Lockers and sets all default values
      */
-    public DevelopingEnvironment(int lockerAmount, int simulationDay, Long day, Long arrival, Map<Float, String> percentageMap){
+    public DevelopingEnvironment(int lockerAmount, int simulationDay, Long day, Long arrival, Map<Float, Long> percentageMap){
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
         this.openingHours = day;
@@ -63,7 +63,7 @@ public class DevelopingEnvironment {
         int number = randomLockerNumber();
         dummyLocker = lockers.get(number);
         dummyLocker.setLocker_number(randomLockerNumber());
-        long duration = getRandomDuration() * 60;
+        long duration = getRandomDuration();
         System.out.println("Guest Duration: " + duration);
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
@@ -72,6 +72,7 @@ public class DevelopingEnvironment {
             focusLockerAssigned = true;
         }
         System.out.println("FOCUS PERSON ARRIVED: " + focusPersonArrived);
+        System.out.println("Current Time: "+ t.getCurrentTime());
         dummyLocker.setChange_In(t.getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
@@ -100,7 +101,7 @@ public class DevelopingEnvironment {
 
             //  (rndFloat <= percentageArray.get(q)) ? System.out.println(percentageMap.get(percentageArray.get(q))) :
             if(rndFloat<=percentageArray.get(q) && rndFloat>compare){
-               guestTime = Long.parseLong(probabilityMap.get(percentageArray.get(q)));
+               guestTime = probabilityMap.get(percentageArray.get(q));
             }
             compare = percentageArray.get(q);
         }

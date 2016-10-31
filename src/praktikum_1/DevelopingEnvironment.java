@@ -44,10 +44,8 @@ public class DevelopingEnvironment {
         this.simulationDay = simulationDay;
         this.openingHours = day;
         this.t = new Time(openingHours);
-
         this.closingTime = t.time;
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
-
         this.probabilityMap = percentageMap;
         //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
@@ -55,39 +53,27 @@ public class DevelopingEnvironment {
         init();
     }
 
-    //TODO das auskommentierte muss alles mitrein
     /**
      * Assignes a random locker to a Person
      */
     public void assignLocker() {
-        System.out.println("---------------------ASSIGN LOCKER ENTERED----------------------");
         Locker l;
         int number = randomLockerNumber();
-        System.out.println("RANDOM NUMBER  " + number);
-        System.out.println("DAS IST DER ASSIGN dummy  " + lockers.get(number));
+        System.out.println("A NR --> " + number +"\n");
         l = lockers.get(number);
-        System.out.println("DAS IST DER ASSIGN dummy  " + l.toString());
-        l.setLocker_number(randomLockerNumber());
+        l.setLocker_number(number);
         long duration = getRandomDuration() * 60;
-        System.out.println("Guest Duration: " + duration);
         l.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(l.getLockerNumber());
             l.updateNeighbourList(l, occupiedNeighbours,freeNeighbours);
             focusLockerAssigned = true;
         }
-        System.out.println("CURRENT TIME: " + t.getCurrentTime());
-
         l.setChange_In(t.getCurrentTime() + 300);
         l.setChange_Out(t.getCurrentTime() + duration - 300);
         l.setDuration(duration);
-        //TODO hier war eine array out of Bound siehe screenshot
-        System.out.println("NUMBER --> " + l.getLockerNumber());
         lockers.set(l.getLockerNumber(), l);
         //s.updateDurationFrequency(duration);
-        System.out.println("\nASSIGNED LOCKER IS " + l.getLockerNumber());
-        System.out.println("---------------------ASSIGN LOCKER EXITED----------------------");
-        l = null;
     }
 
     /**
@@ -168,12 +154,13 @@ public class DevelopingEnvironment {
         //TODO liste überprüfen
         int lockerNumber;
         Random r = new Random();
+        Locker l;
         dummyLocker = new Locker(0, false, 0, 0, 0, null);
 
         while (true) {
             lockerNumber = r.nextInt(lockerAmount);
-            dummyLocker.setLocker_number(lockerNumber);
-            if (!dummyLocker.isOccupied()) return lockerNumber;
+            l = lockers.get(lockerNumber);
+            if (!l.isOccupied()) return lockerNumber;
         }
     }
 

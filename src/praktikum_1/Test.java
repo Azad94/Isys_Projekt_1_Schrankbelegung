@@ -51,7 +51,7 @@ public class Test {
 
 
         for(int i = 0; i <= daysOfSimulation-1;i++){
-            System.out.println("LETS START");
+            System.out.println("--- LETS START THE SIMULATION ---\n");
             environment = new DevelopingEnvironment(lockerAmount, daysOfSimulation, openingHours, arrival, percentageMap);
             environment.simulate();
             i++;

@@ -42,13 +42,18 @@ public class Statistics {
             }
         }
         else{
-           **/ file  = new File("SimulationsLog.txt");
+           **/
+
+            System.out.println("-----------------ENTERING SAVE DATA---------------------");
+            file  = new File("SimulationsLog.txt");
+            System.out.println("EXISTIERT DIE FILE --> " +file.exists() + "\n");
             try {
                 FileWriter writer = new FileWriter(file);
                 writer.write(stringRepresentation(simulatingDay));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            System.out.println("\nDONE\n");
         //}
     }
 
@@ -58,6 +63,15 @@ public class Statistics {
      */
     public String stringRepresentation(int simulatingDay){
         StringBuilder builder = new StringBuilder();
+        long a = 1;
+        int b= 1;
+        durationFrequency.put(a, b);
+        durationFrequency.put(a = 2, b = 2);
+        durationFrequency.put(a = 3, b = 3);
+        durationFrequency.put(a = 4, b = 4);
+        durationFrequency.put(a = 5, b = 5);
+        durationFrequency.put(a = 6, b = 6);
+        System.out.println("BUILDING THE STRING...");
         builder.append("----- SIMULATIONSTAG NR. " + simulatingDay + " -----");
         builder.append("Belegungszeit (in Minuten)");
         builder.append(", ");
@@ -70,6 +84,7 @@ public class Statistics {
             builder.append("\r\n");
         }
         builder.append("\n\n");
+        System.out.println("STRING TO WRITE --> "+builder.toString().trim()+"\n");
         return builder.toString().trim();
     }
 

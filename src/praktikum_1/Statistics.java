@@ -61,6 +61,7 @@ public class Statistics {
     }
 
     public long getRandomDuration() {
+
         return 1;
     }
 

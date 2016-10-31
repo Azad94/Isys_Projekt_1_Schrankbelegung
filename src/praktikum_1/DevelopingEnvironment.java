@@ -1,8 +1,6 @@
 package praktikum_1;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class DevelopingEnvironment {
 
@@ -35,11 +33,12 @@ public class DevelopingEnvironment {
     private Locker targetLocker;
     Time t;
     Statistics s = new Statistics();
-    Map<String, Float> probabilityMap;
+    Map<Float, String> probabilityMap;
+    List<Float> percentageArray;
     /**
      * Initializes all Lockers and sets all default values
      */
-    public DevelopingEnvironment(Long day, Long arrival, Map<String, Float> percentageMap){
+    public DevelopingEnvironment(Long day, Long arrival, Map<Float, String> percentageMap){
         this.openingHours = day;
         this.t = new Time(openingHours);
 
@@ -47,7 +46,9 @@ public class DevelopingEnvironment {
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
 
         this.probabilityMap = percentageMap;
-
+        //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
+        this.percentageArray = new ArrayList<>(probabilityMap.keySet());
+        Collections.sort(percentageArray);
         init();
     }
     private void init() {
@@ -93,6 +94,28 @@ public class DevelopingEnvironment {
         dummyLocker.setDuration(duration);
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
         s.updateDurationFrequency(duration);
+    }
+
+    /**
+     * Noch mega hässlich aber wählt uns eine zufällige zeit aus.
+     *
+     * @return
+     */
+    private long getRandomDuration() {
+        Long guestTime = 0l;
+        Random rnd = new Random();
+        float rndFloat = rnd.nextFloat();
+        System.out.println("random float: " + rndFloat);
+        float compare = 0.0f;
+        for(int q = 0; q<percentageArray.size();q++){
+
+            //  (rndFloat <= percentageArray.get(q)) ? System.out.println(percentageMap.get(percentageArray.get(q))) :
+            if(rndFloat<=percentageArray.get(q) && rndFloat>compare){
+               guestTime =  Long.parseLong(probabilityMap.get(percentageArray.get(q)));
+            }
+            compare = percentageArray.get(q);
+        }
+        return guestTime;
     }
 
     /**

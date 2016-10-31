@@ -60,15 +60,23 @@ public class DevelopingEnvironment {
      * Assignes a random locker to a Person
      */
     public void assignLocker() {
+        System.out.println("---------------------ASSIGN LOCKER ENTERED----------------------");
+        Locker l;
         int number = randomLockerNumber();
         dummyLocker = lockers.get(number);
         dummyLocker.setLocker_number(randomLockerNumber());
         long duration = getRandomDuration();
+        System.out.println("RANDOM NUMBER  " + number);
+        System.out.println("DAS IST DER ASSIGN dummy  " + lockers.get(number));
+        l = lockers.get(number);
+        System.out.println("DAS IST DER ASSIGN dummy  " + l.toString());
+        l.setLocker_number(randomLockerNumber());
+        long duration = getRandomDuration() * 60;
         System.out.println("Guest Duration: " + duration);
-        dummyLocker.setOccupied(true);
+        l.setOccupied(true);
         if (focusPersonArrived) {
-            targetLocker.setLocker_number(dummyLocker.getLockerNumber());
-            dummyLocker.updateNeighbourList(dummyLocker, occupiedNeighbours,freeNeighbours);
+            targetLocker.setLocker_number(l.getLockerNumber());
+            l.updateNeighbourList(l, occupiedNeighbours,freeNeighbours);
             focusLockerAssigned = true;
         }
         System.out.println("FOCUS PERSON ARRIVED: " + focusPersonArrived);
@@ -76,14 +84,18 @@ public class DevelopingEnvironment {
         dummyLocker.setChange_In(t.getCurrentTime() + 300);
         dummyLocker.setChange_Out(duration - 300);
         dummyLocker.setDuration(duration);
+        System.out.println("CURRENT TIME: " + t.getCurrentTime());
 
-        //TODO das kann dann raus
-        dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
-
+        l.setChange_In(t.getCurrentTime() + 300);
+        l.setChange_Out(t.getCurrentTime() + duration - 300);
+        l.setDuration(duration);
         //TODO hier war eine array out of Bound siehe screenshot
-        lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
+        System.out.println("NUMBER --> " + l.getLockerNumber());
+        lockers.set(l.getLockerNumber(), l);
         //s.updateDurationFrequency(duration);
-        System.out.println("\nASSIGNED LOCKER IS " + dummyLocker.toString());
+        System.out.println("\nASSIGNED LOCKER IS " + l.getLockerNumber());
+        System.out.println("---------------------ASSIGN LOCKER EXITED----------------------");
+        l = null;
     }
 
     /**
@@ -161,12 +173,13 @@ public class DevelopingEnvironment {
      * @return random number of Locker to be assigned
      */
     private int randomLockerNumber() {
+        //TODO liste überprüfen
         int lockerNumber;
         Random r = new Random();
         dummyLocker = new Locker(0, false, 0, 0, 0, null);
 
         while (true) {
-            lockerNumber = r.nextInt((lockerAmount) + 1);
+            lockerNumber = r.nextInt(lockerAmount);
             dummyLocker.setLocker_number(lockerNumber);
             if (!dummyLocker.isOccupied()) return lockerNumber;
         }

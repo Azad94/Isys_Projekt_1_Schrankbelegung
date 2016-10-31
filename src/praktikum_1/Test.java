@@ -8,8 +8,8 @@ import java.util.*;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        long openingHours = 30;
-        long arrival = 10;
+        long openingHours = 1;
+        long arrival = 0;
         Map<String, String> map = new HashMap<>();
         Map<Float, Long> percentageMap = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));

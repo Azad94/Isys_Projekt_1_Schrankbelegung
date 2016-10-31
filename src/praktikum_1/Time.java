@@ -9,10 +9,10 @@ public class Time {
         this.currentTime = 0;
         this.time = inSec(dayTime);
     }
-
+    //10 = 10 sekunden jetzt 10 minuten
     public void timeInterval(){
         if(currentTime<time) {
-            currentTime += 10;
+            currentTime += 600;
         }
     }
 

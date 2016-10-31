@@ -63,7 +63,7 @@ public class DevelopingEnvironment {
         int number = randomLockerNumber();
         dummyLocker = lockers.get(number);
         dummyLocker.setLocker_number(randomLockerNumber());
-        long duration = getRandomDuration();
+        long duration = getRandomDuration() * 60;
         System.out.println("Guest Duration: " + duration);
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {

@@ -39,7 +39,7 @@ public class DevelopingEnvironment {
     /**
      * Initializes all Lockers and sets all default values
      */
-    public DevelopingEnvironment(int lockerAmount, int simulationDay, Long day, Long arrival, Map<String, Float> percentageMap){
+    public DevelopingEnvironment(int lockerAmount, int simulationDay, Long day, Long arrival, Map<Float, String> percentageMap){
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
         this.openingHours = day;
@@ -62,7 +62,8 @@ public class DevelopingEnvironment {
     public void assignLocker() {
         dummyLocker = new Locker(0, false, 0, 0, 0, null);
         dummyLocker.setLocker_number(randomLockerNumber());
-        long duration = s.getRandomDuration();
+        long duration = getRandomDuration();
+        System.out.println("Guest Duration: " + duration);
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(dummyLocker.getLockerNumber());
@@ -71,8 +72,8 @@ public class DevelopingEnvironment {
         }
         System.out.println("FOCUS PERSON ARRIVED: " + focusPersonArrived);
         dummyLocker.setChange_In(t.getCurrentTime() + 300);
-        //dummyLocker.setChange_Out(duration - 300);
-        //dummyLocker.setDuration(duration);
+        dummyLocker.setChange_Out(duration - 300);
+        dummyLocker.setDuration(duration);
 
         //TODO kommentier ich das aus und lasse es in INIT() sind die nachbarn immer NULL
         dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
@@ -99,7 +100,7 @@ public class DevelopingEnvironment {
 
             //  (rndFloat <= percentageArray.get(q)) ? System.out.println(percentageMap.get(percentageArray.get(q))) :
             if(rndFloat<=percentageArray.get(q) && rndFloat>compare){
-               guestTime =  Long.parseLong(probabilityMap.get(percentageArray.get(q)));
+               guestTime = Long.parseLong(probabilityMap.get(percentageArray.get(q)));
             }
             compare = percentageArray.get(q);
         }
@@ -222,8 +223,10 @@ public class DevelopingEnvironment {
     public void simulate() {
         //TODO hier war eine array out of Bound siehe screenshot
         System.out.println("ENTER SIMULATE");
-        routine();
-        t.timeInterval();
+        while(t.currentTime<t.time){
+            routine();
+            t.timeInterval();
+        }
         //TODO wenn de Tag vorbei ist soll diese Methode aufgerufen werden
         s.saveData(simulationDay);
     }

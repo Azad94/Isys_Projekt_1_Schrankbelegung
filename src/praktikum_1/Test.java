@@ -3,6 +3,7 @@ package praktikum_1;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Test {
@@ -10,7 +11,7 @@ public class Test {
         long openingHours = 30;
         long arrival = 10;
         Map<String, String> map = new HashMap<>();
-        Map<String, Float> percentageMap = new HashMap<>();
+        Map<Float, String> percentageMap = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line = "";
         DevelopingEnvironment environment;
@@ -20,6 +21,9 @@ public class Test {
         int lockerAmount = 20;
 
         int total = 0;
+        float total2 = 0.0f;
+        int start = 0;
+        int end = 0;
         int dummy = 0;
         List<String> mapKeys;
 
@@ -28,12 +32,17 @@ public class Test {
                 String parts[] = line.split(" ");
                 map.put(parts[0], parts[1]);
                 total += Integer.parseInt(parts[1]);
+                total2 += Float.parseFloat(parts[1])/99999.0f;
             }
         }
 
         mapKeys = new ArrayList<>(map.keySet());
+        List<Float> percentageArray;
+        float percentageValue = 0.0f;
         while(dummy<map.size()){
-            percentageMap.put(mapKeys.get(dummy) , (Float.parseFloat(map.get(mapKeys.get(dummy)))*100.0f)/(float)total);
+            float floatDummy = Float.parseFloat(map.get(mapKeys.get(dummy)))/(float)total;
+            percentageValue += floatDummy;
+            percentageMap.put(percentageValue, mapKeys.get(dummy));
             dummy++;
         }
         in.close();

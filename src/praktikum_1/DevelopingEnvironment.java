@@ -1,9 +1,6 @@
 package praktikum_1;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class DevelopingEnvironment {
 
@@ -37,8 +34,8 @@ public class DevelopingEnvironment {
     private Locker targetLocker;
     Time t;
     Statistics s = new Statistics();
-    Map<String, Float> probabilityMap;
-
+    Map<Float, String> probabilityMap;
+    List<Float> percentageArray;
     /**
      * Initializes all Lockers and sets all default values
      */
@@ -47,9 +44,14 @@ public class DevelopingEnvironment {
         this.simulationDay = simulationDay;
         this.openingHours = day;
         this.t = new Time(openingHours);
+
         this.closingTime = t.time;
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
+
         this.probabilityMap = percentageMap;
+        //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
+        this.percentageArray = new ArrayList<>(probabilityMap.keySet());
+        Collections.sort(percentageArray);
         init();
     }
 
@@ -60,7 +62,7 @@ public class DevelopingEnvironment {
     public void assignLocker() {
         dummyLocker = new Locker(0, false, 0, 0, 0, null);
         dummyLocker.setLocker_number(randomLockerNumber());
-        //long duration = s.getRandomDuration();
+        long duration = s.getRandomDuration();
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(dummyLocker.getLockerNumber());
@@ -80,6 +82,28 @@ public class DevelopingEnvironment {
         //s.updateDurationFrequency(duration);
         System.out.println("\nASSIGNED LOCKER IS " + dummyLocker.toString());
         System.out.println("˜\nABER IST ER AUCH GESPEICHERT " + lockers.get(dummyLocker.getLockerNumber()));
+    }
+
+    /**
+     * Noch mega hässlich aber wählt uns eine zufällige zeit aus.
+     *
+     * @return
+     */
+    private long getRandomDuration() {
+        Long guestTime = 0l;
+        Random rnd = new Random();
+        float rndFloat = rnd.nextFloat();
+        System.out.println("random float: " + rndFloat);
+        float compare = 0.0f;
+        for(int q = 0; q<percentageArray.size();q++){
+
+            //  (rndFloat <= percentageArray.get(q)) ? System.out.println(percentageMap.get(percentageArray.get(q))) :
+            if(rndFloat<=percentageArray.get(q) && rndFloat>compare){
+               guestTime =  Long.parseLong(probabilityMap.get(percentageArray.get(q)));
+            }
+            compare = percentageArray.get(q);
+        }
+        return guestTime;
     }
 
     /**

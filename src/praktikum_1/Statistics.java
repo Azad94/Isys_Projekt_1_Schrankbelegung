@@ -74,6 +74,8 @@ public class Statistics {
     }
 
     /**public long getRandomDuration() {
+    public long getRandomDuration() {
+
         return 1;
     }
 

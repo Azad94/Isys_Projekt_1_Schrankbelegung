@@ -7,17 +7,19 @@ import java.util.*;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        long openingHours = 10;
-        long arrival = 5;
+        long openingHours = 30;
+        long arrival = 10;
         Map<String, String> map = new HashMap<>();
         Map<String, Float> percentageMap = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line = "";
         DevelopingEnvironment environment;
+        //TODO parametrisierbar machen
+        int daysOfSimulation = 1;
+        //TODO parametrisierbar machen
+        int lockerAmount = 20;
 
         int total = 0;
-        int start = 0;
-        int end = 0;
         int dummy = 0;
         List<String> mapKeys;
 
@@ -28,6 +30,7 @@ public class Test {
                 total += Integer.parseInt(parts[1]);
             }
         }
+
         mapKeys = new ArrayList<>(map.keySet());
         while(dummy<map.size()){
             percentageMap.put(mapKeys.get(dummy) , (Float.parseFloat(map.get(mapKeys.get(dummy)))*100.0f)/(float)total);
@@ -35,10 +38,16 @@ public class Test {
         }
         in.close();
 
-        System.out.println (percentageMap);
-        System.out.println(percentageMap.size());
+        //System.out.println (percentageMap);
+        //System.out.println(percentageMap.size());
 
-        environment = new DevelopingEnvironment(openingHours, arrival, percentageMap);
+
+        for(int i = 0; i <= daysOfSimulation-1;i++){
+            System.out.println("LETS START");
+            environment = new DevelopingEnvironment(lockerAmount, daysOfSimulation, openingHours, arrival, percentageMap);
+            environment.simulate();
+            i++;
+
+        }
     }
-
 }

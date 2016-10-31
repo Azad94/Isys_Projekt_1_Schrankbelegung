@@ -102,26 +102,49 @@ public class Locker {
      */
     public void setNeighbours(int locker_number, int amountOfLockers) {
         List<Integer> neighbours = new LinkedList<>();
-
         //checks if the Locker has 5 neighbours
-        if (locker_number >= 2 && locker_number <= amountOfLockers - 2) {
-            neighbours.add(locker_number - 2);
-            neighbours.add(locker_number - 1);
-            neighbours.add(locker_number + 1);
-            neighbours.add(locker_number + 2);
-            neighbours.add(locker_number + 3);
+        if (locker_number >= 2 && locker_number <= amountOfLockers - 3) {
+            if(locker_number%2 == 0){
+                neighbours.add(locker_number - 2);
+                neighbours.add(locker_number - 1);
+                neighbours.add(locker_number + 1);
+                neighbours.add(locker_number + 2);
+                neighbours.add(locker_number + 3);
+            }else{
+                neighbours.add(locker_number - 3);
+                neighbours.add(locker_number - 2);
+                neighbours.add(locker_number - 1);
+                neighbours.add(locker_number + 1);
+                neighbours.add(locker_number + 2);
+            }
+
+
         }
         //checks if the Locker is at the beginning
         else if (locker_number < 3) {
-            neighbours.add(locker_number + 1);
-            neighbours.add(locker_number + 2);
-            neighbours.add(locker_number + 3);
+            if(locker_number == 0) {
+                neighbours.add(locker_number + 1);
+                neighbours.add(locker_number + 2);
+                neighbours.add(locker_number + 3);
+            }else {
+                neighbours.add(locker_number - 1);
+                neighbours.add(locker_number + 1);
+                neighbours.add(locker_number + 2);
+            }
         }
         //checks if the Locker is at the end
-        else if (locker_number > amountOfLockers - 2) {
-            neighbours.add(locker_number - 3);
-            neighbours.add(locker_number - 2);
-            neighbours.add(locker_number - 1);
+        else if (locker_number > amountOfLockers - 3) {
+            if(locker_number == amountOfLockers - 2){
+                neighbours.add(locker_number - 2);
+                neighbours.add(locker_number - 1);
+                neighbours.add(locker_number + 1);
+            }
+            if(locker_number == amountOfLockers -1){
+                neighbours.add(locker_number - 3);
+                neighbours.add(locker_number - 2);
+                neighbours.add(locker_number - 1);
+            }
+
         }
         this.neighbours = neighbours;
     }
@@ -192,12 +215,12 @@ public class Locker {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.locker_number + "");
-        builder.append(this.occupied + "");
-        builder.append(this.change_In + "");
-        builder.append(this.change_Out + "");
-        builder.append(this.duration + "");
-        builder.append(this.neighbours + "");
+        builder.append("Locker Number : " + this.locker_number + "\n");
+        builder.append("Occupied : " +this.occupied + "\n");
+        builder.append("Change In: " +this.change_In + "\n");
+        builder.append("Change Out : " +this.change_Out + "\n");
+        builder.append("Duration : " +this.duration + "\n");
+        builder.append("Neighbours : " +this.neighbours + "\n");
         return builder.toString();
     }
 }

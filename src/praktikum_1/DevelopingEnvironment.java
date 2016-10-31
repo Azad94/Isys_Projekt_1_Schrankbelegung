@@ -1,5 +1,6 @@
 package praktikum_1;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -7,7 +8,8 @@ import java.util.Random;
 public class DevelopingEnvironment {
 
     //Amount of Lockers intialized
-    private int lockerAmount = getLockerAmount();
+    private int lockerAmount;
+    private int simulationDay;
     //List of intialized Lockers
     private List<Locker> lockers;
     //List of occupied Neighbours of the Focus Person
@@ -36,63 +38,48 @@ public class DevelopingEnvironment {
     Time t;
     Statistics s = new Statistics();
     Map<String, Float> probabilityMap;
+
     /**
      * Initializes all Lockers and sets all default values
      */
-    public DevelopingEnvironment(Long day, Long arrival, Map<String, Float> percentageMap){
+    public DevelopingEnvironment(int lockerAmount, int simulationDay, Long day, Long arrival, Map<String, Float> percentageMap){
+        this.lockerAmount = lockerAmount;
+        this.simulationDay = simulationDay;
         this.openingHours = day;
         this.t = new Time(openingHours);
-
         this.closingTime = t.time;
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
-
         this.probabilityMap = percentageMap;
-
         init();
     }
-    private void init() {
-       // lockers = new LinkedList<>();
-       // focusPersonArrived = false;
-        // focusLockerAssigned = false;
-      //  focusPersonLeft = false;
-       // totalEncounters = 0;
-       // targetLocker = new Locker(0   ,0,0,0,null);
 
-       /* for (int i = 0; i < lockerAmount; i++) {
-            lockers.add(i, dummyLocker = new Locker(i, false, 0, 0, 0, null));
-            dummyLocker.setNeighbours(i, lockerAmount);
-        }*/
-    }
-
-    //TODO HABE ICH TIME GEPACKT
-    /**
-     *
-     * @param a
-     * @return
-     *
-    private long inSec(long a){
-        a = a * 60 * 60;
-        return a;
-    }
-    */
-
+    //TODO das auskommentierte muss alles mitrein
     /**
      * Assignes a random locker to a Person
      */
     public void assignLocker() {
+        dummyLocker = new Locker(0, false, 0, 0, 0, null);
         dummyLocker.setLocker_number(randomLockerNumber());
-        long duration = s.getRandomDuration();
+        //long duration = s.getRandomDuration();
         dummyLocker.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(dummyLocker.getLockerNumber());
             dummyLocker.updateNeighbourList(dummyLocker, occupiedNeighbours,freeNeighbours);
             focusLockerAssigned = true;
         }
+        System.out.println("FOCUS PERSON ARRIVED: " + focusPersonArrived);
         dummyLocker.setChange_In(t.getCurrentTime() + 300);
-        dummyLocker.setChange_Out(duration - 300);
-        dummyLocker.setDuration(duration);
+        //dummyLocker.setChange_Out(duration - 300);
+        //dummyLocker.setDuration(duration);
+
+        //TODO kommentier ich das aus und lasse es in INIT() sind die nachbarn immer NULL
+        dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
+
+        //TODO hier war eine array out of Bound siehe screenshot
         lockers.set(dummyLocker.getLockerNumber(), dummyLocker);
-        s.updateDurationFrequency(duration);
+        //s.updateDurationFrequency(duration);
+        System.out.println("\nASSIGNED LOCKER IS " + dummyLocker.toString());
+        System.out.println("˜\nABER IST ER AUCH GESPEICHERT " + lockers.get(dummyLocker.getLockerNumber()));
     }
 
     /**
@@ -140,7 +127,7 @@ public class DevelopingEnvironment {
      */
     public boolean checkForVisitor() {
         double probability = Math.random();
-        return probability <= 0.1;
+        return probability <= 1;
     }
 
     /**
@@ -150,6 +137,7 @@ public class DevelopingEnvironment {
     private int randomLockerNumber() {
         int lockerNumber;
         Random r = new Random();
+        dummyLocker = new Locker(0, false, 0, 0, 0, null);
 
         while (true) {
             lockerNumber = r.nextInt((lockerAmount) + 1);
@@ -167,27 +155,70 @@ public class DevelopingEnvironment {
                 && focusPersonArrived
                     && focusLockerAssigned) {
              focusPersonArrived = true;
-        } else  focusPersonArrived = false;
+            System.out.println("FOCUS PERSON INCOMING");
+        } else  {
+            focusPersonArrived = false;
+            System.out.println("FOCUS PERSON NOT COMING YET");
+        }
+    }
 
+    /**
+     * Initializes all parameters for the Simulation
+     */
+    public void init() {
+        System.out.println("INTIALIZING ...");
+        lockers = new LinkedList<>();
+        occupiedNeighbours = new LinkedList<>();
+        freeNeighbours = new LinkedList<>();
+        focusPersonArrived = false;
+        focusLockerAssigned = false;
+        focusPersonLeft = false;
+        totalEncounters = 0;
+        targetLocker = new Locker(0, false, 0, 0, 0, null);
+
+       for (int i = 0; i < lockerAmount; i++) {
+           dummyLocker = new Locker(i, false, 0, 0, 0, null);
+           dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
+           lockers.add(i, dummyLocker);
+       }
+
+       dummyLocker.releaseLocker();
+/**
+        for (int i = 0; i < lockers.size(); i++) {
+            if(dummyLocker.neighbours == null){
+                System.out.println("NR -- " + i + " ist leer");
+            }
+        }
+         **/
     }
 
     /**
      * Simulates the whole Environment/Scenario
      */
     public void simulate() {
+        //TODO hier war eine array out of Bound siehe screenshot
+        System.out.println("ENTER SIMULATE");
         routine();
         t.timeInterval();
-        //if(FERTIG) s.saveData(0);
+        //TODO wenn de Tag vorbei ist soll diese Methode aufgerufen werden
+        s.saveData(simulationDay);
     }
 
     /**
      * Settles the Procedure of the Simulation
      */
     private void routine(){
+        System.out.println("ENTER ROUTINE");
+        System.out.println("DER FOCUS LOCKER " + targetLocker.toString());
+        System.out.println("OCCUPIED NEIGHBOURS " + occupiedNeighbours.toString());
+        System.out.println("FREE NEIGHBOURS" + freeNeighbours.toString());
         if(!checkForVisitor()){
             updateLockers();
+            System.out.println("NO ONE IS COMING");
             return;
         }
+        System.out.println("INCOMING PERSON");
+        //TODO hier war eine array out of Bound siehe screenshot
         checkForFocusPerson();
         assignLocker();
         if(focusPersonLeft)
@@ -195,25 +226,14 @@ public class DevelopingEnvironment {
         updateLockers();
     }
 
-    // Nur zum testen
-    public long getArrival(){
-        return timeOfArrivalOfFocusPerson;
-    }
-    // Nur zum testen
-    public long getClosingTime(){
-        return closingTime;
-    }
-
-
-    private int getLockerAmount() {
-        //TODO IMPLEMENTIEREN
-        return 0;
-    }
-
-
-    private void updateCurrentTime(long currentTime) {
-        //TODO Implementieren
-        if(currentTime > openingHours && currentTime < closingTime)
-        this.currentTime = currentTime;
-    }
+    /**
+     * Resets necessary parameters
+     *
+    public void reset(){
+        //save statistics before reset
+        s.saveData(simulationDay);
+        lockers.clear();
+        lockers = null;
+        targetLocker = null;
+    }*/
 }

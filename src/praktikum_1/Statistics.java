@@ -14,6 +14,7 @@ public class Statistics {
     public Statistics() {
     }
 
+    //TODO die MAP durationFrequency muss am Anfang mit den Belegungszeiten als Key und 0 als Value initializiert werden
     /**
      * Updates the frequency of the duration
      * recently assigned.
@@ -31,22 +32,33 @@ public class Statistics {
      * @param simulatingDay day of simulation
      */
     public void saveData(int simulatingDay){
-        file  = new File("Simulationstag_Nr." + simulatingDay + ".txt");
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(stringRepresentation());
-        } catch (IOException e) {
-            e.printStackTrace();
+/*
+        if(file.exists()){
+            try {
+                FileWriter writer = new FileWriter(file,true);
+                writer.write(stringRepresentation(simulatingDay));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        else{
+           **/ file  = new File("SimulationsLog.txt");
+            try {
+                FileWriter writer = new FileWriter(file);
+                writer.write(stringRepresentation(simulatingDay));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        //}
     }
 
     /**
      * Creates a String representation of the map
      * with the duration frequencies
      */
-    public String stringRepresentation(){
-
+    public String stringRepresentation(int simulatingDay){
         StringBuilder builder = new StringBuilder();
+        builder.append("----- SIMULATIONSTAG NR. " + simulatingDay + " -----");
         builder.append("Belegungszeit (in Minuten)");
         builder.append(", ");
         builder.append("Häufigkeit des Auftretens");
@@ -57,14 +69,19 @@ public class Statistics {
             builder.append(printMap.getValue());
             builder.append("\r\n");
         }
+        builder.append("\n\n");
         return builder.toString().trim();
     }
 
-    public long getRandomDuration() {
+    /**public long getRandomDuration() {
         return 1;
     }
 
-    public void frequencyScale(){
-
-    }
+    public void frequencyScale(){}
+    **/
 }
+
+/**
+ Mittelwert der häufigkeitsverteilung multipliziert mit der Wahrscheinlichkeit
+    ca. 46 = 1/3 belegt
+ **/

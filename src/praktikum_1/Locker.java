@@ -160,56 +160,6 @@ public class Locker {
     }
 
     /**
-     * Examines if the Focus Person encounters with it's
-     * neighbours. Only the occupied Lockers are examined.
-     *
-     * @param focusLocker          Locker of the Focus Person
-     * @param occupiedNeighbours   List of all surrounding occupied neighbours
-     * @param freeNeighbours       List of all surrounding free neighbours
-     * @return                     number of encounter the Focus Person has
-     */
-    public int encounter(Locker focusLocker, List<Integer> occupiedNeighbours, List<Integer> freeNeighbours){
-        Locker dummy = new Locker(0,false, 0,0,0,null);
-        int encounter = 0;
-        updateNeighbourList(focusLocker, occupiedNeighbours, freeNeighbours);
-
-        for(int i = 0; i < occupiedNeighbours.size()-1; i++){
-            dummy.setLocker_number(occupiedNeighbours.get(i));
-            //subtracting the time of change
-            if(dummy.change_In >= focusLocker.change_In -300
-                    && dummy.change_In <= focusLocker.change_In){
-                encounter++;
-            }else
-                //subtracting the time of change
-                if(dummy.change_Out >= focusLocker.change_Out -300
-                    && dummy.change_Out <= focusLocker.change_Out){
-                encounter++;
-            }
-        }
-        return encounter;
-    }
-
-    /**
-     * Updates the Neighbours of the Focus Person,
-     * trough checking if its neighbours are
-     * occupied or not.
-     *
-     * @param focusLocker           Locker of the Focus Person
-     * @param occupiedNeighbours    List of all surrounding occupied neighbours
-     * @param freeNeighbours        List of all surrounding free neighbours
-     */
-    public void updateNeighbourList(Locker focusLocker, List<Integer> occupiedNeighbours, List<Integer> freeNeighbours){
-        Locker dummy = new Locker(0,false, 0,0,0,null);
-        for(int i = 0; i < focusLocker.neighbours.size()-1; i++){
-            dummy.setLocker_number(focusLocker.neighbours.get(i));
-            if (dummy.isOccupied())
-                occupiedNeighbours.add(dummy.getLockerNumber());
-            else
-                freeNeighbours.add(dummy.getLockerNumber());
-        }
-    }
-
-    /**
      * @return String representation of a Locker
      */
     @Override

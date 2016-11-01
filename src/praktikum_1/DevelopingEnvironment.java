@@ -36,6 +36,7 @@ public class DevelopingEnvironment {
     Statistics s = new Statistics();
     Map<Float, Long> probabilityMap;
     List<Float> percentageArray;
+    Map<Long, Integer> dailyStats = new HashMap<>();
     /**
      * Initializes all Lockers and sets all default values
      */
@@ -64,6 +65,7 @@ public class DevelopingEnvironment {
         l = lockers.get(number);
         l.setLocker_number(number);
         long duration = getRandomDuration() * 60;
+        dailyStats.replace(duration/60,dailyStats.get(duration/60)+1);
         l.setOccupied(true);
         if (focusPersonArrived) {
             targetLocker.setLocker_number(l.getLockerNumber());
@@ -75,6 +77,9 @@ public class DevelopingEnvironment {
         l.setDuration(duration);
         lockers.set(l.getLockerNumber(), l);
         //s.updateDurationFrequency(duration);
+        System.out.println("STATISTICS: ");
+        System.out.println("------------------------------------------------------------ ");
+        System.out.println(dailyStats);
     }
 
     /**
@@ -96,6 +101,7 @@ public class DevelopingEnvironment {
             }
             compare = percentageArray.get(q);
         }
+        System.out.println("GUESTTIME: " + guestTime);
         return guestTime;
     }
 
@@ -144,7 +150,7 @@ public class DevelopingEnvironment {
      */
     public boolean checkForVisitor() {
         double probability = Math.random();
-        return probability <= 1;
+        return probability <= 0.1;
     }
 
     /**
@@ -192,7 +198,10 @@ public class DevelopingEnvironment {
         focusPersonLeft = false;
         totalEncounters = 0;
         targetLocker = new Locker(0, false, 0, 0, 0, null);
-
+        List<Long> diffTimes = new ArrayList<>(probabilityMap.values());
+        for(long l : diffTimes){
+            dailyStats.put(l, 0);
+        }
        for (int i = 0; i < lockerAmount; i++) {
            dummyLocker = new Locker(i, false, 0, 0, 0, null);
            dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);

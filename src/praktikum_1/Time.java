@@ -12,7 +12,7 @@ public class Time {
     //10 = 10 sekunden jetzt 10 minuten
     public void timeInterval(){
         if(currentTime<time) {
-            currentTime += 600;
+            currentTime += 10;
         }
     }
 

@@ -1,10 +1,14 @@
 package praktikum_1;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Statistics {
 
@@ -32,29 +36,24 @@ public class Statistics {
      * @param simulatingDay day of simulation
      */
     public void saveData(int simulatingDay){
-/*
-        if(file.exists()){
-            try {
-                FileWriter writer = new FileWriter(file,true);
-                writer.write(stringRepresentation(simulatingDay));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else{
-           **/
 
-            System.out.println("-----------------ENTERING SAVE DATA---------------------");
-            file  = new File("SimulationsLog.txt");
-            System.out.println("EXISTIERT DIE FILE --> " +file.exists() + "\n");
-            try {
-                FileWriter writer = new FileWriter(file);
-                writer.write(stringRepresentation(simulatingDay));
+            try{
+
+                Logger logger = Logger.getLogger("Simulations_Log");
+                FileHandler fh = new FileHandler("SimulationsLog.log", true);
+                logger.addHandler(fh);
+
+                SimpleFormatter f = new SimpleFormatter();
+                fh.setFormatter(f);
+                logger.setUseParentHandlers(false);
+
+                logger.info("\n\n" + stringRepresentation(simulatingDay) + "\n");
+
+            }catch (SecurityException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("\nDONE\n");
-        //}
     }
 
     /**
@@ -72,14 +71,14 @@ public class Statistics {
         durationFrequency.put(a = 5, b = 5);
         durationFrequency.put(a = 6, b = 6);
         System.out.println("BUILDING THE STRING...");
-        builder.append("----- SIMULATIONSTAG NR. " + simulatingDay + " -----");
+        builder.append("\n----- SIMULATIONSTAG NR. " + simulatingDay + " -----\n");
         builder.append("Belegungszeit (in Minuten)");
-        builder.append(", ");
+        builder.append("\t");
         builder.append("Häufigkeit des Auftretens");
         builder.append("\r\n");
         for(Map.Entry<Long, Integer> printMap : durationFrequency.entrySet()){
             builder.append(printMap.getKey());
-            builder.append(", ");
+            builder.append("\t");
             builder.append(printMap.getValue());
             builder.append("\r\n");
         }
@@ -87,15 +86,6 @@ public class Statistics {
         System.out.println("STRING TO WRITE --> "+builder.toString().trim()+"\n");
         return builder.toString().trim();
     }
-
-    /**public long getRandomDuration() {
-    public long getRandomDuration() {
-
-        return 1;
-    }
-
-    public void frequencyScale(){}
-    **/
 }
 
 /**

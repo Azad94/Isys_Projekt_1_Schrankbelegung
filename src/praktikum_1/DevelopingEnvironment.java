@@ -63,7 +63,10 @@ public class DevelopingEnvironment {
         int number = randomLockerNumber();
         l = lockers.get(number);
         l.setLocker_number(number);
-        long duration = getRandomDuration() * 60;
+        long duration = getRandomDuration();
+        System.out.println("TEST:DURATION: " + duration);
+        System.out.println("TEST:MAP.KEY: " + duration/60);
+        System.out.println("TEST:MAP.VALUE: " + dailyStats.get(duration/60)+1);
         dailyStats.replace(duration/60,dailyStats.get(duration/60)+1);
         l.setOccupied(true);
         if (focusPersonArrived) {
@@ -199,7 +202,7 @@ public class DevelopingEnvironment {
         targetLocker = new Locker(0, false, 0, 0, 0, null);
         List<Long> diffTimes = new ArrayList<>(probabilityMap.values());
         for(long l : diffTimes){
-            dailyStats.put(l, 0);
+            dailyStats.put(l/60, 0);
         }
        for (int i = 0; i < lockerAmount; i++) {
            dummyLocker = new Locker(i, false, 0, 0, 0, null);

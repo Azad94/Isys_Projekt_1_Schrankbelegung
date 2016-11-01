@@ -15,7 +15,14 @@ public class Statistics {
     Map<Long, Integer> durationFrequency = new HashMap<>();
     File file;
 
-    public Statistics() {
+    /**
+     * Constructor
+     * @param map stored the amount of people who stayed a certain amount of time
+     *            key: amount of time
+     *            value: number of people
+     */
+    public Statistics(Map<Long, Integer> map) {
+        this.durationFrequency = map;
     }
 
     //TODO die MAP durationFrequency muss am Anfang mit den Belegungszeiten als Key und 0 als Value initializiert werden
@@ -48,6 +55,11 @@ public class Statistics {
                 logger.setUseParentHandlers(false);
 
                 logger.info("\n\n" + stringRepresentation(simulatingDay) + "\n");
+                int gesamt = 0;
+                for(int i: durationFrequency.values()){
+                    gesamt += i;
+                }
+                System.out.println("Personen Gesamt: " + gesamt);
 
             }catch (SecurityException e) {
                 e.printStackTrace();
@@ -62,14 +74,7 @@ public class Statistics {
      */
     public String stringRepresentation(int simulatingDay){
         StringBuilder builder = new StringBuilder();
-        long a = 1;
-        int b= 1;
-        durationFrequency.put(a, b);
-        durationFrequency.put(a = 2, b = 2);
-        durationFrequency.put(a = 3, b = 3);
-        durationFrequency.put(a = 4, b = 4);
-        durationFrequency.put(a = 5, b = 5);
-        durationFrequency.put(a = 6, b = 6);
+
         System.out.println("BUILDING THE STRING...");
         builder.append("\n----- SIMULATIONSTAG NR. " + simulatingDay + " -----\n");
         builder.append("Belegungszeit (in Minuten)");

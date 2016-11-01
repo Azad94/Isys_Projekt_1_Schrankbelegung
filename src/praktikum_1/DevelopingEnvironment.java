@@ -33,7 +33,7 @@ public class DevelopingEnvironment {
     //Locker of the Focus Person
     private Locker targetLocker;
     Time t;
-    Statistics s = new Statistics();
+    Statistics s;
     Map<Float, Long> probabilityMap;
     List<Float> percentageArray;
     Map<Long, Integer> dailyStats = new HashMap<>();
@@ -223,6 +223,7 @@ public class DevelopingEnvironment {
             t.timeInterval();
         }
         System.out.println("ENDING DAY");
+        s = new Statistics(dailyStats);
         s.saveData(simulationDay);
     }
 

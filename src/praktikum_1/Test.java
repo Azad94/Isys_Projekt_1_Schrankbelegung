@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        long openingHours = 1;
+        long openingHours = 10;
         long arrival = 0;
         Map<String, String> map = new HashMap<>();
         Map<Float, Long> percentageMap = new HashMap<>();
@@ -17,7 +17,7 @@ public class Test {
         //TODO parametrisierbar machen
         int daysOfSimulation = 1;
         //TODO parametrisierbar machen
-        int lockerAmount = 20;
+        int lockerAmount = 150;
 
         int total = 0;
         float total2 = 0.0f;

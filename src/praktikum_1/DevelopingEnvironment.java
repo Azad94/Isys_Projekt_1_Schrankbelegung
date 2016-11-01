@@ -61,7 +61,6 @@ public class DevelopingEnvironment {
     public void assignLocker() {
         Locker l;
         int number = randomLockerNumber();
-        System.out.println("A NR --> " + number +"\n");
         l = lockers.get(number);
         l.setLocker_number(number);
         long duration = getRandomDuration() * 60;
@@ -76,6 +75,7 @@ public class DevelopingEnvironment {
         l.setChange_Out(t.getCurrentTime() + duration - 300);
         l.setDuration(duration);
         lockers.set(l.getLockerNumber(), l);
+        l.releaseLocker();
         //s.updateDurationFrequency(duration);
         System.out.println("STATISTICS: ");
         System.out.println("------------------------------------------------------------ ");
@@ -91,7 +91,6 @@ public class DevelopingEnvironment {
         Long guestTime = 0l;
         Random rnd = new Random();
         float rndFloat = rnd.nextFloat();
-        System.out.println("random float: " + rndFloat);
         float compare = 0.0f;
         for(int q = 0; q<percentageArray.size();q++){
 
@@ -165,7 +164,9 @@ public class DevelopingEnvironment {
         while (true) {
             lockerNumber = r.nextInt(lockerAmount);
             l = lockers.get(lockerNumber);
-            if (!l.isOccupied()) return lockerNumber;
+            if (!l.isOccupied()) {
+                return lockerNumber;
+            }
         }
     }
 
@@ -178,10 +179,8 @@ public class DevelopingEnvironment {
                 && focusPersonArrived
                     && focusLockerAssigned) {
              focusPersonArrived = true;
-            System.out.println("FOCUS PERSON INCOMING");
         } else  {
             focusPersonArrived = false;
-            System.out.println("FOCUS PERSON NOT COMING YET");
         }
     }
 
@@ -189,7 +188,7 @@ public class DevelopingEnvironment {
      * Initializes all parameters for the Simulation
      */
     public void init() {
-        System.out.println("INTIALIZING ...");
+        System.out.println("- INTIALIZING ...");
         lockers = new LinkedList<>();
         occupiedNeighbours = new LinkedList<>();
         freeNeighbours = new LinkedList<>();
@@ -215,11 +214,12 @@ public class DevelopingEnvironment {
      * Simulates the whole Environment/Scenario
      */
     public void simulate() {
-        System.out.println("ENTER SIMULATE");
+        System.out.println("- ENTER simulate()\n");
         while(t.currentTime<t.time){
             routine();
             t.timeInterval();
         }
+        System.out.println("ENDING DAY");
         s.saveData(simulationDay);
     }
 
@@ -227,16 +227,13 @@ public class DevelopingEnvironment {
      * Settles the Procedure of the Simulation
      */
     private void routine(){
-        System.out.println("ENTER ROUTINE");
-        System.out.println("DER FOCUS LOCKER " + targetLocker.toString());
-        System.out.println("OCCUPIED NEIGHBOURS " + occupiedNeighbours.toString());
-        System.out.println("FREE NEIGHBOURS" + freeNeighbours.toString());
+        System.out.println("- ENTER routine()");
         if(!checkForVisitor()){
             updateLockers();
-            System.out.println("NO ONE IS COMING");
+            System.out.println("- No customer is coming ...\n");
             return;
         }
-        System.out.println("INCOMING PERSON");
+        System.out.println("- Customer is coming ...\n");
         checkForFocusPerson();
         assignLocker();
         if(focusPersonLeft)

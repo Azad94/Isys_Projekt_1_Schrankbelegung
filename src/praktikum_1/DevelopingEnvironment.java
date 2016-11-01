@@ -48,6 +48,7 @@ public class DevelopingEnvironment {
 
         this.closingTime = t.getDayTime();
         this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
+        System.out.println("EXPECTED TIME FOR FOCUSPERSON: "+ timeOfArrivalOfFocusPerson);
         this.probabilityMap = percentageMap;
         //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
@@ -70,6 +71,7 @@ public class DevelopingEnvironment {
             targetLocker.setLocker_number(l.getLockerNumber());
             l.updateNeighbourList(l, occupiedNeighbours,freeNeighbours);
             focusLockerAssigned = true;
+            System.out.println("FocusPerson arrived\nhis locker number is " + targetLocker.getLockerNumber());
         }
         l.setChange_In(t.getCurrentTime() + 300);
         l.setChange_Out(t.getCurrentTime() + duration - 300);
@@ -172,12 +174,9 @@ public class DevelopingEnvironment {
      * Person to be entering the Studio
      */
     public void checkForFocusPerson() {
-        if (t.getCurrentTime() > timeOfArrivalOfFocusPerson
-                && focusPersonArrived
-                    && focusLockerAssigned) {
+        if (t.getCurrentTime() > timeOfArrivalOfFocusPerson-300 && t.getCurrentTime() < timeOfArrivalOfFocusPerson+300
+                && !focusPersonArrived && !focusLockerAssigned) {
              focusPersonArrived = true;
-        } else  {
-            focusPersonArrived = false;
         }
     }
 

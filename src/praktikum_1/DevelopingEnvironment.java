@@ -64,9 +64,6 @@ public class DevelopingEnvironment {
         l = lockers.get(number);
         l.setLocker_number(number);
         long duration = getRandomDuration();
-        System.out.println("TEST:DURATION: " + duration);
-        System.out.println("TEST:MAP.KEY: " + duration/60);
-        System.out.println("TEST:MAP.VALUE: " + dailyStats.get(duration/60)+1);
         dailyStats.replace(duration/60,dailyStats.get(duration/60)+1);
         l.setOccupied(true);
         if (focusPersonArrived) {
@@ -80,9 +77,6 @@ public class DevelopingEnvironment {
         lockers.set(l.getLockerNumber(), l);
         l.releaseLocker();
         //s.updateDurationFrequency(duration);
-        System.out.println("STATISTICS: ");
-        System.out.println("------------------------------------------------------------ ");
-        System.out.println(dailyStats);
     }
 
     /**

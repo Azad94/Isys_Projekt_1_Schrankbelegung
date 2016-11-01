@@ -8,23 +8,23 @@ import java.util.*;
 /**
  * CommandLine Arguments:
  * index 0: amount of hours to simulate a day
- *          the arrival of the focusPerson is set to half the amount of the open hours
- * index 1: number of days for the simulation
- * index 2: amount of lockers in the studio
+ * index 1: hours after opening til focus arrives
+ * index 2: number of days for the simulation
+ * index 3: amount of lockers in the studio
  */
 public class Test {
     public static void main(String[] args) throws IOException {
         long openingHours = Long.parseLong(args[0]);
-        long arrival = openingHours/2l;
+        long arrival = Long.parseLong(args[1]);
         Map<String, String> map = new HashMap<>();
         Map<Float, Long> percentageMap = new HashMap<>();
         BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line = "";
         DevelopingEnvironment environment;
         //TODO parametrisierbar machen
-        int daysOfSimulation = Integer.parseInt(args[1]);
+        int daysOfSimulation = Integer.parseInt(args[2]);
         //TODO parametrisierbar machen
-        int lockerAmount = Integer.parseInt(args[2]);
+        int lockerAmount = Integer.parseInt(args[3]);
 
         int total = 0;
         int dummy = 0;

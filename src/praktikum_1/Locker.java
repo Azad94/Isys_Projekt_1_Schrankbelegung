@@ -20,7 +20,6 @@ public class Locker {
 
 
     /**
-     *
      * @param locker_number number of this Locker
      * @param occupied      shows if this Locker is in use
      * @param change_In     the time he'll be finished changing at the beginning
@@ -38,7 +37,6 @@ public class Locker {
     }
 
     /**
-     *
      * @return locker number
      */
     public int getLockerNumber() {
@@ -46,7 +44,6 @@ public class Locker {
     }
 
     /**
-     *
      * @return true if this Locker is occupied
      */
     public boolean isOccupied() {
@@ -54,7 +51,6 @@ public class Locker {
     }
 
     /**
-     *
      * @param locker_number locker number to set
      */
     public void setLocker_number(int locker_number) {
@@ -62,7 +58,6 @@ public class Locker {
     }
 
     /**
-     *
      * @param change_In change in time to set
      */
     public void setChange_In(long change_In) {
@@ -70,7 +65,6 @@ public class Locker {
     }
 
     /**
-     *
      * @param change_Out change out time to set
      */
     public void setChange_Out(long change_Out) {
@@ -78,7 +72,6 @@ public class Locker {
     }
 
     /**
-     *
      * @param duration duration time to set
      */
     public void setDuration(long duration) {
@@ -86,7 +79,6 @@ public class Locker {
     }
 
     /**
-     *
      * @param occupied occupied status to set
      */
     public void setOccupied(boolean occupied) {
@@ -97,20 +89,21 @@ public class Locker {
      * Searches for the neighbours of the Locker from the Focus Person.
      * Regarding which Locker the Focus Person has it's neighbours
      * are either three or five.
-     * @param locker_number     number of the locker which neighbours are supposed to be found
-     * @param amountOfLockers   number of lockers initialized
+     *
+     * @param locker_number   number of the locker which neighbours are supposed to be found
+     * @param amountOfLockers number of lockers initialized
      */
     public void setNeighbours(int locker_number, int amountOfLockers) {
         List<Integer> neighbours = new LinkedList<>();
         //checks if the Locker has 5 neighbours
         if (locker_number >= 2 && locker_number <= amountOfLockers - 3) {
-            if(locker_number%2 == 0){
+            if (locker_number % 2 == 0) {
                 neighbours.add(locker_number - 2);
                 neighbours.add(locker_number - 1);
                 neighbours.add(locker_number + 1);
                 neighbours.add(locker_number + 2);
                 neighbours.add(locker_number + 3);
-            }else{
+            } else {
                 neighbours.add(locker_number - 3);
                 neighbours.add(locker_number - 2);
                 neighbours.add(locker_number - 1);
@@ -122,11 +115,11 @@ public class Locker {
         }
         //checks if the Locker is at the beginning
         else if (locker_number < 3) {
-            if(locker_number == 0) {
+            if (locker_number == 0) {
                 neighbours.add(locker_number + 1);
                 neighbours.add(locker_number + 2);
                 neighbours.add(locker_number + 3);
-            }else {
+            } else {
                 neighbours.add(locker_number - 1);
                 neighbours.add(locker_number + 1);
                 neighbours.add(locker_number + 2);
@@ -134,12 +127,12 @@ public class Locker {
         }
         //checks if the Locker is at the end
         else if (locker_number > amountOfLockers - 3) {
-            if(locker_number == amountOfLockers - 2){
+            if (locker_number == amountOfLockers - 2) {
                 neighbours.add(locker_number - 2);
                 neighbours.add(locker_number - 1);
                 neighbours.add(locker_number + 1);
             }
-            if(locker_number == amountOfLockers -1){
+            if (locker_number == amountOfLockers - 1) {
                 neighbours.add(locker_number - 3);
                 neighbours.add(locker_number - 2);
                 neighbours.add(locker_number - 1);
@@ -163,28 +156,28 @@ public class Locker {
      * Examines if the Focus Person encounters with it's
      * neighbours. Only the occupied Lockers are examined.
      *
-     * @param focusLocker          Locker of the Focus Person
-     * @param occupiedNeighbours   List of all surrounding occupied neighbours
-     * @param freeNeighbours       List of all surrounding free neighbours
-     * @return                     number of encounter the Focus Person has
+     * @param focusLocker        Locker of the Focus Person
+     * @param occupiedNeighbours List of all surrounding occupied neighbours
+     * @param freeNeighbours     List of all surrounding free neighbours
+     * @return number of encounter the Focus Person has
      */
-    public int encounter(Locker focusLocker, List<Integer> occupiedNeighbours, List<Integer> freeNeighbours){
-        Locker dummy = new Locker(0,false, 0,0,0,null);
+    public int encounter(Locker focusLocker, List<Integer> occupiedNeighbours, List<Integer> freeNeighbours) {
+        Locker dummy = new Locker(0, false, 0, 0, 0, null);
         int encounter = 0;
         updateNeighbourList(focusLocker, occupiedNeighbours, freeNeighbours);
 
-        for(int i = 0; i < occupiedNeighbours.size()-1; i++){
+        for (int i = 0; i < occupiedNeighbours.size() - 1; i++) {
             dummy.setLocker_number(occupiedNeighbours.get(i));
             //subtracting the time of change
-            if(dummy.change_In >= focusLocker.change_In -300
-                    && dummy.change_In <= focusLocker.change_In){
+            if (dummy.change_In >= focusLocker.change_In - 300
+                    && dummy.change_In <= focusLocker.change_In) {
                 encounter++;
-            }else
+            } else
                 //subtracting the time of change
-                if(dummy.change_Out >= focusLocker.change_Out -300
-                    && dummy.change_Out <= focusLocker.change_Out){
-                encounter++;
-            }
+                if (dummy.change_Out >= focusLocker.change_Out - 300
+                        && dummy.change_Out <= focusLocker.change_Out) {
+                    encounter++;
+                }
         }
         return encounter;
     }
@@ -194,13 +187,13 @@ public class Locker {
      * trough checking if its neighbours are
      * occupied or not.
      *
-     * @param focusLocker           Locker of the Focus Person
-     * @param occupiedNeighbours    List of all surrounding occupied neighbours
-     * @param freeNeighbours        List of all surrounding free neighbours
+     * @param focusLocker        Locker of the Focus Person
+     * @param occupiedNeighbours List of all surrounding occupied neighbours
+     * @param freeNeighbours     List of all surrounding free neighbours
      */
-    public void updateNeighbourList(Locker focusLocker, List<Integer> occupiedNeighbours, List<Integer> freeNeighbours){
-        Locker dummy = new Locker(0,false, 0,0,0,null);
-        for(int i = 0; i < focusLocker.neighbours.size()-1; i++){
+    public void updateNeighbourList(Locker focusLocker, List<Integer> occupiedNeighbours, List<Integer> freeNeighbours) {
+        Locker dummy = new Locker(0, false, 0, 0, 0, null);
+        for (int i = 0; i < focusLocker.neighbours.size(); i++) {
             dummy.setLocker_number(focusLocker.neighbours.get(i));
             if (dummy.isOccupied())
                 occupiedNeighbours.add(dummy.getLockerNumber());
@@ -216,11 +209,11 @@ public class Locker {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Locker Number : " + this.locker_number + "\n");
-        builder.append("Occupied : " +this.occupied + "\n");
-        builder.append("Change In: " +this.change_In + "\n");
-        builder.append("Change Out : " +this.change_Out + "\n");
-        builder.append("Duration : " +this.duration + "\n");
-        builder.append("Neighbours : " +this.neighbours + "\n");
+        builder.append("Occupied : " + this.occupied + "\n");
+        builder.append("Change In: " + this.change_In + "\n");
+        builder.append("Change Out : " + this.change_Out + "\n");
+        builder.append("Duration : " + this.duration + "\n");
+        builder.append("Neighbours : " + this.neighbours + "\n");
         return builder.toString();
     }
 }

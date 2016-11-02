@@ -52,28 +52,28 @@ public class Statistics {
      * @param simulatingDay day of simulation
      */
     public void saveData(int simulatingDay) {
-           try{
+        try{
 
-                Logger logger = Logger.getLogger("Simulations_Log");
-                FileHandler fh = new FileHandler("res/SimulationsLog_"+ simulatingDay++ +".log" , true);
-                logger.addHandler(fh);
+            Logger logger = Logger.getLogger("Simulations_Log");
+            FileHandler fh = new FileHandler("res/SimulationsLog_"+ simulatingDay++ +".log" , true);
+            logger.addHandler(fh);
 
-                SimpleFormatter f = new SimpleFormatter();
-                fh.setFormatter(f);
-                logger.setUseParentHandlers(false);
+            SimpleFormatter f = new SimpleFormatter();
+            fh.setFormatter(f);
+            logger.setUseParentHandlers(false);
 
-                logger.info("\n\n" + stringRepresentation(simulatingDay) + "\n");
-                int gesamt = 0;
-                for(int i: durationFrequency.values()){
-                    gesamt += i;
-                }
-                System.out.println("Personen Gesamt: " + gesamt);
-
-            }catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            logger.info("\n\n" + stringRepresentation(simulatingDay) + "\n");
+            int gesamt = 0;
+            for(int i: durationFrequency.values()){
+                gesamt += i;
             }
+            System.out.println("Personen Gesamt: " + gesamt);
+
+        }catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -99,7 +99,7 @@ public class Statistics {
         }
         builder.append("\nNumber of Persons: " + numOfPeople);
         builder.append("\n\n");
-       // System.out.println("STRING TO WRITE --> " + builder.toString().trim() + "\n");
+        // System.out.println("STRING TO WRITE --> " + builder.toString().trim() + "\n");
         return builder.toString().trim();
     }
 }

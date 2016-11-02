@@ -227,8 +227,6 @@ public class DevelopingEnvironment {
         }
     }
 
-    //TODO WEITERE ABZWIEIGUNGNGNGNGNGNGNNGNGN
-    //TODO FÜR MALTE
     public int encounter(){
         Locker dummy;
 

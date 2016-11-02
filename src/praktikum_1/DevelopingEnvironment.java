@@ -257,12 +257,12 @@ public class DevelopingEnvironment {
      */
     public void simulate() {
         System.out.println("- ENTER simulate()\n");
-        while (t.currentTime < t.time) {
+        while (t.getCurrentTime()< t.getDayTime()) {
             routine();
             t.timeInterval();
+            System.out.println("Aktuelle Zeit: " + t.getCurrentTime());
         }
         System.out.println("ENDING DAY");
-        System.out.println("DAAAAYYY: " + simulationDay);
         s.saveData(simulationDay);
     }
 

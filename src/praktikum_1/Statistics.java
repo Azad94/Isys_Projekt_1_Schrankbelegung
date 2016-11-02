@@ -29,7 +29,6 @@ public class Statistics {
     public Map<Long, Integer> getMap(){
         return this.durationFrequency;
     }
-    //TODO die MAP durationFrequency muss am Anfang mit den Belegungszeiten als Key und 0 als Value initializiert werden
 
    /* /**
      * Updates the frequency of the duration

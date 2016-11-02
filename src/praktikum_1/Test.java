@@ -55,7 +55,7 @@ public class Test {
         in.close();
 
         for (int i = 0; i < daysOfSimulation; i++) {
-            System.out.println("--- LETS START THE SIMULATION ---\n");
+        //    System.out.println("--- LETS START THE SIMULATION ---\n");
             environment = new DevelopingEnvironment(lockerAmount, (i + 1), openingHours, arrival, timewindow, percentageMap, guestProbability);
             environment.simulate();
         }

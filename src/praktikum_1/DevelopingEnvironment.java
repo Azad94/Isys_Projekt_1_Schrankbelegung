@@ -32,6 +32,8 @@ public class DevelopingEnvironment {
     private boolean focusPersonLeft;
     //shows how many encounters the Focus Person had
     private int totalEncounters;
+    //amount of persons for a certain time
+    private int dailyAmount;
     //Locker for multiple uses
     private Locker dummyLocker;
     //Locker of the Focus Person
@@ -60,6 +62,7 @@ public class DevelopingEnvironment {
         this.guestProbabilty = guestProbabilty;
         System.out.println("EXPECTED TIME FOR FOCUSPERSON: " + timeOfArrivalOfFocusPerson);
         this.probabilityMap = percentageMap;
+        this.dailyAmount = 0;
         //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
         Collections.sort(percentageArray);
@@ -75,7 +78,10 @@ public class DevelopingEnvironment {
         l = lockers.get(number);
         l.setLocker_number(number);
         long duration = getRandomDuration();
-        s.getMap().replace(t.inMin(duration), (s.getMap().get(t.inMin(duration)) + 1));
+        dailyAmount = s.getMap().get(t.inMin(duration));
+        System.out.println(dailyAmount);
+        dailyAmount++;
+        s.getMap().replace(t.inMin(duration), dailyAmount);
         l.setOccupied(true);
         l.setChange_In(t.getCurrentTime() + timeWindow);
         l.setChange_Out(t.getCurrentTime() + duration - timeWindow);
@@ -243,6 +249,7 @@ public class DevelopingEnvironment {
             dailyStats.put(t.inMin(l), 0);
         }
         s = new Statistics(dailyStats);
+        System.out.println("MAAAPPP: " + s.getMap());
         for (int i = 0; i < lockerAmount; i++) {
             dummyLocker = new Locker(i, false, 0, 0, 0, null);
             dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);

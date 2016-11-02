@@ -32,6 +32,8 @@ public class DevelopingEnvironment {
     private boolean focusPersonLeft;
     //shows how many encounters the Focus Person had
     private int totalEncounters;
+    //amount of persons for a certain time
+    private int dailyAmount;
     //Locker for multiple uses
     private Locker dummyLocker;
     //Locker of the Focus Person
@@ -43,7 +45,7 @@ public class DevelopingEnvironment {
 
     List<Float> percentageArray;
     //Map for the daily time distribution for all guests
-    Map<Long, Integer> dailyStats;
+    Map<Long, Integer> dailyStats = new HashMap<>();
 
     /**
      * Initializes all Lockers and sets all default values
@@ -60,6 +62,7 @@ public class DevelopingEnvironment {
         this.guestProbabilty = guestProbabilty;
     //    System.out.println("EXPECTED TIME FOR FOCUSPERSON: " + timeOfArrivalOfFocusPerson);
         this.probabilityMap = percentageMap;
+        this.dailyAmount = 0;
         //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
         Collections.sort(percentageArray);
@@ -74,8 +77,10 @@ public class DevelopingEnvironment {
         int number = randomLockerNumber();
         l = lockers.get(number);
         long duration = getRandomDuration();
-        //TODO NULL POINTER EXCEPTION
-        s.getMap().replace(t.inMin(duration), (s.getMap().get(t.inMin(duration)) + 1));
+        dailyAmount = s.getMap().get(t.inMin(duration));
+        //System.out.println(dailyAmount);
+        dailyAmount++;
+        s.getMap().replace(t.inMin(duration), dailyAmount);
         l.setOccupied(true);
         l.setChange_In(t.getCurrentTime() + timeWindow);
         l.setChange_Out(t.getCurrentTime() + duration - timeWindow);
@@ -242,7 +247,6 @@ public class DevelopingEnvironment {
         focusLockerAssigned = false;
         focusPersonLeft = false;
         totalEncounters = 0;
-        dailyStats = new HashMap<>();
         List<Long> diffTimes = new ArrayList<>(probabilityMap.values());
         for (long l : diffTimes) {
             dailyStats.put(t.inMin(l), 0);

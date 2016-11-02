@@ -228,7 +228,6 @@ public class DevelopingEnvironment {
     //TODO MAGIC NUMBER WEG MACHEN ENCOUNTER BEARBEITEN
     public int encounter(){
         Locker dummy;
-        int encounter = 0;
 
         System.out.println("BESETZTE NACHBARN " + occupiedNeighbours.toString());
         for(int i = 0; i < occupiedNeighbours.size(); i++){
@@ -237,15 +236,17 @@ public class DevelopingEnvironment {
             //subtracting the time of change
             if((dummy.change_In >= targetLocker.change_In - timeWindow && dummy.change_In <= targetLocker.change_In)||
                     (dummy.change_In-timeWindow <= targetLocker.change_In && dummy.change_In >= targetLocker.change_In)) {
-                encounter++;
+                totalEncounters++;
             }
-            if ((dummy.change_Out <= targetLocker.change_Out && dummy.change_Out + timeWindow <= targetLocker.change_Out + timeWindow) ||
-                        (dummy.change_Out >= targetLocker.change_Out && dummyLocker.change_Out <= targetLocker.change_Out + timeWindow)) {
-                    encounter++;
+            System.out.println(dummy.change_Out);
+            System.out.println("traget: " + targetLocker.change_Out);
+            if ((dummy.change_Out + timeWindow >= targetLocker.change_Out && dummy.change_Out <= targetLocker.change_Out)||
+                    (dummy.change_Out <= targetLocker.change_Out + timeWindow && dummy.change_Out >= targetLocker.change_Out)) {
+                    totalEncounters++;
             }
 
         }
-        return encounter;
+        return totalEncounters;
     }
 
     /**
@@ -300,7 +301,7 @@ public class DevelopingEnvironment {
         l7.setNeighbours(6, 10);
 
         //7
-        lockerss.add(7, l8 = new Locker(7,true, 20, 110, 130, null));
+        lockerss.add(7, l8 = new Locker(7,true, 30, 120, 130, null));
         l8.setNeighbours(7, 10);
 
         //8

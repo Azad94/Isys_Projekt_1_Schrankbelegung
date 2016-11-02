@@ -87,7 +87,6 @@ public class Statistics {
     public String stringRepresentation(int simulatingDay) {
         StringBuilder builder = new StringBuilder();
         int numOfPeople = 0;
-        System.out.println("BUILDING THE STRING...");
         builder.append("\n----- SIMULATIONSTAG NR. " + simulatingDay + " -----\n");
         builder.append("Belegungszeit (in Minuten)");
         builder.append("\t");

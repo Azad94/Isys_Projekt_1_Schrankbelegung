@@ -75,7 +75,7 @@ public class DevelopingEnvironment {
         l = lockers.get(number);
         long duration = getRandomDuration();
         //TODO NULL POINTER EXCEPTION
-        //s.getMap().replace(t.inMin(duration), (s.getMap().get(t.inMin(duration)) + 1));
+        s.getMap().replace(t.inMin(duration), (s.getMap().get(t.inMin(duration)) + 1));
         l.setOccupied(true);
         l.setChange_In(t.getCurrentTime() + timeWindow);
         l.setChange_Out(t.getCurrentTime() + duration - timeWindow);
@@ -156,7 +156,6 @@ public class DevelopingEnvironment {
      */
     public boolean checkForVisitor() {
         double probability = Math.random();
-        System.out.println("VIELLEICHT --> " + probability +"\n");
         return probability <= guestProbabilty;
     }
 

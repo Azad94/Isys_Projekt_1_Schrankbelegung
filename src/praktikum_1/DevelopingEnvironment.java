@@ -106,8 +106,7 @@ public class DevelopingEnvironment {
             compare = percentageArray.get(q);
         }
     //    System.out.println("GUESTTIME: " + guestTime);
-        //TODO DEBUG ZWECKE
-        return 30l;
+        return guestTime;
     }
 
 

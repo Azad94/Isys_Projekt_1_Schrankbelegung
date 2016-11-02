@@ -23,12 +23,3 @@ public class Locker {
         return  builder.toString();
     }
 }
-
-/**
-
- LOCKER STRUKTUR BEI 20 LOCKER SIEHT WIE FOLGT AUS
-
- 1 3 5 7  9 11 13 16 17 19
- 2 4 6 8 10 12 14 16 18 20
-
- **/

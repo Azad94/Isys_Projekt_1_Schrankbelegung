@@ -237,26 +237,35 @@ public class DevelopingEnvironment {
             //dummy = lockers.get(occupiedNeighbours.get(i));
             dummy = lockerss.get(occupiedNeighbours.get(i));
             //subtracting the time of change
+            long dIn1 = dummy.change_In - timeWindow;
+            long dIn2 = dummy.change_In;
+            long dOut1 = dummy.change_Out;
+            long dOut2 = dummy.change_Out + timeWindow;
+
+            long tIn1 = targetLocker.change_In - timeWindow;
+            long tIn2 = targetLocker.change_In;
+            long tOut1 = targetLocker.change_Out;
+            long tOut2 = targetLocker.change_Out + timeWindow;
             if(in == 0) {
-                if ((dummy.change_In >= targetLocker.change_In - timeWindow && dummy.change_In <= targetLocker.change_In) ||
-                        (dummy.change_In - timeWindow <= targetLocker.change_In && dummy.change_In >= targetLocker.change_In) ||
-                        (dummy.change_In - timeWindow >= targetLocker.change_Out && dummy.change_In - timeWindow <= targetLocker.change_Out +timeWindow)||
-                        (dummy.change_In - timeWindow <= targetLocker.change_Out && dummy.change_In <= targetLocker.change_Out+timeWindow)) {
+                if ((dIn1 <= tIn1 && dIn2 >= tIn1 && dIn2 <= tIn2) ||
+                        (dIn1 >= tIn1 && dIn1 <= tIn2 && dIn2 >= tIn2) ||
+                        (dOut1 <= tIn1 && dOut2 >= tIn1 && dOut2 <= tIn2) ||
+                        (dOut1 >= tIn1 && dOut1 <= tIn2 && dOut2 >= tIn2)) {
                     in = 1;
                 }
             }
             if(out == 0) {
-                if ((dummy.change_Out >= targetLocker.change_In - timeWindow && dummy.change_Out+timeWindow >= targetLocker.change_In) ||
-                        (dummy.change_Out <= targetLocker.change_In-timeWindow && dummy.change_Out+timeWindow <= targetLocker.change_In)||
-                        (dummy.change_Out <= targetLocker.change_Out && dummy.change_Out + timeWindow <= targetLocker.change_Out + timeWindow) ||
-                        (dummy.change_Out >= targetLocker.change_Out && dummy.change_Out <= targetLocker.change_Out + timeWindow)) {
+                if ((dIn1 <= tOut1 && dIn2 >= tOut1 && dIn2 <= tOut2) ||
+                        (dIn1 >= tOut1 && dIn1 <= tOut2 && dIn2 >= tOut2) ||
+                        (dOut1 <= tOut1 && dOut2 >= tOut1 && dOut2 <= tOut2) ||
+                        (dOut1 >= tOut1 && dOut1 <= tOut2 && dOut2 >= tOut2)) {
                     out = 1;
                 }
             }
             System.out.println("NR: "+dummy.getLockerNumber() + " WERT VON IN: " + in + " WERT VON OUT: " + out);
         }
         if(in == 1 && out == 1) return 2;
-        if(in == 1 && out == 0 || in == 0 && out == 0) return 1;
+        if(in == 1 && out == 0 || in == 0 && out == 1) return 1;
         return 0;
     }
 
@@ -298,7 +307,7 @@ public class DevelopingEnvironment {
         l3.setNeighbours(2, 10);
 
         //3
-        lockerss.add(3, l4 = new Locker(3,true, 30, 90, 100, null));
+        lockerss.add(3, l4 = new Locker(3,true, 30, 110, 120, null));
         l4.setNeighbours(3, 10);
 
         //4
@@ -314,7 +323,7 @@ public class DevelopingEnvironment {
         l7.setNeighbours(6, 10);
 
         //7
-        lockerss.add(7, l8 = new Locker(7,true, 30, 90, 100, null));
+        lockerss.add(7, l8 = new Locker(7,true, 60, 90, 70, null));
         l8.setNeighbours(7, 10);
 
         //8

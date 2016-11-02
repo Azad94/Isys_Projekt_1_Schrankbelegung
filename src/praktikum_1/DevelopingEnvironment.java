@@ -134,11 +134,11 @@ public class DevelopingEnvironment {
             focusPersonLeft = true;
         }
 
-        //l = lockers.get(lockerNr);
-        l = lockerss.get(lockerNr);
+        l = lockers.get(lockerNr);
+        //l = lockerss.get(lockerNr);
         l.releaseLocker();
-        //lockers.set(lockerNr, l);
-        lockerss.set(lockerNr, l);
+        lockers.set(lockerNr, l);
+        //lockerss.set(lockerNr, l);
     }
 
     /**
@@ -148,8 +148,8 @@ public class DevelopingEnvironment {
     private void updateLockers() {
         Locker l;
         for(int i = 0; i < lockerAmount; i++) {
-            //l = lockers.get(i);
-            l = lockerss.get(i);
+            l = lockers.get(i);
+            //l = lockerss.get(i);
             if (l.isOccupied() && timeUp(l.getLockerNumber())){
                 //            System.out.println("------------------------------\nES WIRD JETZT FREI GESETZT" + l.getLockerNumber()+ "------------------------------\n");
                 freeLocker(l.getLockerNumber());
@@ -158,8 +158,8 @@ public class DevelopingEnvironment {
     }
 
     private boolean timeUp(int lockerNr) {
-        //Locker l = lockers.get(lockerNr);
-        Locker l = lockerss.get(lockerNr);
+        Locker l = lockers.get(lockerNr);
+        //Locker l = lockerss.get(lockerNr);
         return l.change_Out < t.getCurrentTime();
     }
 
@@ -183,8 +183,8 @@ public class DevelopingEnvironment {
 
         while (true) {
             lockerNumber = r.nextInt(lockerAmount);
-            //l = lockers.get(lockerNumber);
-            l = lockerss.get(lockerNumber);
+            l = lockers.get(lockerNumber);
+            //l = lockerss.get(lockerNumber);
             if (!l.isOccupied()) {
                 return lockerNumber;
             }
@@ -199,7 +199,6 @@ public class DevelopingEnvironment {
         if (t.getCurrentTime() > timeOfArrivalOfFocusPerson - timeWindow && t.getCurrentTime() < timeOfArrivalOfFocusPerson + timeWindow
                 && !focusPersonArrived && !focusLockerAssigned) {
             focusPersonArrived = true;
-            System.out.println("FOKUS PERSON KOMMT JETZT!!!!!!");
             //        System.out.println("AKTUELLE ZEIT " + t.getCurrentTime());
             //        System.out.println("ARRIVAL ZEIT " + timeOfArrivalOfFocusPerson);
         }
@@ -213,8 +212,8 @@ public class DevelopingEnvironment {
         freeNeighbours.clear();
 
         for(int i = 0; i < targetLocker.neighbours.size(); i++){
-            //dummyLocker = lockers.get(targetLocker.neighbours.get(i));
-            dummyLocker = lockerss.get(targetLocker.neighbours.get(i));
+            dummyLocker = lockers.get(targetLocker.neighbours.get(i));
+            //dummyLocker = lockerss.get(targetLocker.neighbours.get(i));
             if (dummyLocker.isOccupied()) {
                 occupiedNeighbours.add(dummyLocker.getLockerNumber());
                 //            System.out.println("Besetzte Neighbours sind jetzt\n" + occupiedNeighbours.toString());
@@ -227,34 +226,43 @@ public class DevelopingEnvironment {
         }
     }
 
+    //TODO WEITERE ABZWIEIGUNGNGNGNGNGNGNNGNGN
+    //TODO FÜR MALTE
     public int encounter(){
         Locker dummy;
 
-        System.out.println("BESETZTE NACHBARN " + occupiedNeighbours.toString());
         for(int i = 0; i < occupiedNeighbours.size(); i++){
-            //dummy = lockers.get(occupiedNeighbours.get(i));
-            dummy = lockerss.get(occupiedNeighbours.get(i));
+            dummy = lockers.get(occupiedNeighbours.get(i));
+            //dummy = lockerss.get(occupiedNeighbours.get(i));
             //subtracting the time of change
+            long dIn1 = dummy.change_In - timeWindow;
+            long dIn2 = dummy.change_In;
+            long dOut1 = dummy.change_Out;
+            long dOut2 = dummy.change_Out + timeWindow;
+
+            long tIn1 = targetLocker.change_In - timeWindow;
+            long tIn2 = targetLocker.change_In;
+            long tOut1 = targetLocker.change_Out;
+            long tOut2 = targetLocker.change_Out + timeWindow;
             if(in == 0) {
-                if ((dummy.change_In >= targetLocker.change_In - timeWindow && dummy.change_In <= targetLocker.change_In) ||
-                        (dummy.change_In - timeWindow <= targetLocker.change_In && dummy.change_In >= targetLocker.change_In) ||
-                        (dummy.change_In - timeWindow >= targetLocker.change_Out && dummy.change_In - timeWindow <= targetLocker.change_Out +timeWindow)||
-                        (dummy.change_In - timeWindow <= targetLocker.change_Out && dummy.change_In <= targetLocker.change_Out+timeWindow)) {
+                if ((dIn1 <= tIn1 && dIn2 >= tIn1 && dIn2 <= tIn2) ||
+                        (dIn1 >= tIn1 && dIn1 <= tIn2 && dIn2 >= tIn2) ||
+                        (dOut1 <= tIn1 && dOut2 >= tIn1 && dOut2 <= tIn2) ||
+                        (dOut1 >= tIn1 && dOut1 <= tIn2 && dOut2 >= tIn2)) {
                     in = 1;
                 }
             }
             if(out == 0) {
-                if ((dummy.change_Out >= targetLocker.change_In - timeWindow && dummy.change_Out+timeWindow >= targetLocker.change_In) ||
-                        (dummy.change_Out <= targetLocker.change_In-timeWindow && dummy.change_Out+timeWindow <= targetLocker.change_In)||
-                        (dummy.change_Out <= targetLocker.change_Out && dummy.change_Out + timeWindow <= targetLocker.change_Out + timeWindow) ||
-                        (dummy.change_Out >= targetLocker.change_Out && dummy.change_Out <= targetLocker.change_Out + timeWindow)) {
+                if ((dIn1 <= tOut1 && dIn2 >= tOut1 && dIn2 <= tOut2) ||
+                        (dIn1 >= tOut1 && dIn1 <= tOut2 && dIn2 >= tOut2) ||
+                        (dOut1 <= tOut1 && dOut2 >= tOut1 && dOut2 <= tOut2) ||
+                        (dOut1 >= tOut1 && dOut1 <= tOut2 && dOut2 >= tOut2)) {
                     out = 1;
                 }
             }
-            System.out.println("NR: "+dummy.getLockerNumber() + " WERT VON IN: " + in + " WERT VON OUT: " + out);
         }
         if(in == 1 && out == 1) return 2;
-        if(in == 1 && out == 0 || in == 0 && out == 0) return 1;
+        if(in == 1 && out == 0 || in == 0 && out == 1) return 1;
         return 0;
     }
 
@@ -277,12 +285,12 @@ public class DevelopingEnvironment {
             dailyStats.put(t.inMin(l), 0);
         }
         s = new Statistics(dailyStats);
-/*        for (int i = 0; i < lockerAmount; i++) {
+       for (int i = 0; i < lockerAmount; i++) {
             dummyLocker = new Locker(i, false, 0, 0, 0, null);
             dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
             lockers.add(i, dummyLocker);
         }
-*/
+/*
         //0
         lockerss.add(0, l1 = new Locker(0,true, 30, 90, 100, null));
         l1.setNeighbours(0, 10);
@@ -296,7 +304,7 @@ public class DevelopingEnvironment {
         l3.setNeighbours(2, 10);
 
         //3
-        lockerss.add(3, l4 = new Locker(3,true, 30, 90, 100, null));
+        lockerss.add(3, l4 = new Locker(3,true, 30, 110, 120, null));
         l4.setNeighbours(3, 10);
 
         //4
@@ -312,7 +320,7 @@ public class DevelopingEnvironment {
         l7.setNeighbours(6, 10);
 
         //7
-        lockerss.add(7, l8 = new Locker(7,true, 30, 90, 100, null));
+        lockerss.add(7, l8 = new Locker(7,true, 60, 90, 70, null));
         l8.setNeighbours(7, 10);
 
         //8
@@ -324,13 +332,13 @@ public class DevelopingEnvironment {
         l10.setNeighbours(9, 10);
 
         targetLocker = lockerss.get(l6.getLockerNumber());
-    }
+ */   }
 
     /**
      * Simulates the whole Environment/Scenario
      */
     public void simulate() {
-        //   System.out.println("- ENTER simulate()\n");
+           System.out.println("- ENTER simulate()\n");
         while (t.currentTime < t.time) {
             routine();
             t.timeInterval();
@@ -340,13 +348,15 @@ public class DevelopingEnvironment {
         s.saveData(simulationDay);
         System.out.println("ENCOUNTERS TODAY: "+totalEncounters + " \n");
     }
+
+    //TODO MUSS AM ENDE RAUS IST NUR DAFÜR DA DAMIT DIE LOCKER DETAILS NUR EINMAL ANGZEIGT WERDEN
     int i = 0;
     /**
      * Settles the Procedure of the Simulation
      */
     private void routine() {
         //    System.out.println("- ENTER routine()");
-/*        if (!checkForVisitor()) {
+       if (!checkForVisitor()) {
             updateLockers();
     //        System.out.println("- No customer is coming ...\n");
             return;
@@ -354,7 +364,7 @@ public class DevelopingEnvironment {
     //    System.out.println("- Customer is coming ...\n");
         checkForFocusPerson();
         assignLocker();
-*/        if(targetLocker != null && !focusPersonLeft) {
+       if(targetLocker != null && !focusPersonLeft) {
             updateNeighbourList();
             if(targetLocker.change_In >= t.currentTime){
                 totalEncounters = encounter();
@@ -364,7 +374,7 @@ public class DevelopingEnvironment {
         }
         updateLockers();
 
-        if(targetLocker!=null && !focusPersonLeft && i==0){
+     /*   if(targetLocker!=null && !focusPersonLeft && i==0){
             System.out.println("----------------- END OF ROTUINE LOOP ---------");
             System.out.println("**********TARGETLOCKER DETAILS**********");
             System.out.println(targetLocker.toString()+"\n");
@@ -372,5 +382,5 @@ public class DevelopingEnvironment {
             System.out.println("DIE FREIEN NACHABRN" + freeNeighbours.toString()+"\n\n");
             i++;
         }
-    }
+    */}
 }

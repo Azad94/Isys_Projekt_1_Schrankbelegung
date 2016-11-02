@@ -11,12 +11,6 @@ public class Statistics {
 
     Map<Long, Integer> durationFrequency = new HashMap<>();
     int day;
-    /*-------------------------------------
-        Änderungen*/
-    FileWriter fw;
-    BufferedWriter bw;
-    PrintWriter out;
-    /*---------------------------------------*/
 
     /**
      * Constructor

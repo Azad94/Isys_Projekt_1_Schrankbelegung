@@ -216,7 +216,7 @@ public class DevelopingEnvironment {
         }
     }
 
-    //TODO MAGIC NUMBER WEG MACHEN
+    //TODO MAGIC NUMBER WEG MACHEN ENCOUNTER BEARBEITEN
     public int encounter(){
         Locker dummy;
         int encounter = 0;
@@ -224,13 +224,15 @@ public class DevelopingEnvironment {
         for(int i = 0; i < occupiedNeighbours.size(); i++){
             dummy = lockers.get(occupiedNeighbours.get(i));
             //subtracting the time of change
-            if(dummy.change_In >= targetLocker.change_In - timeWindow && dummy.change_In <= targetLocker.change_In){
+            if((dummy.change_In >= targetLocker.change_In - timeWindow && dummy.change_In <= targetLocker.change_In)||
+                    (dummy.change_In-timeWindow <= targetLocker.change_In && dummy.change_In >= targetLocker.change_In)) {
                 encounter++;
-            }else
-                //subtracting the time of change
-                if(dummy.change_Out >= targetLocker.change_Out && dummy.change_Out <= targetLocker.change_Out + timeWindow){
+            }
+            if ((dummy.change_Out <= targetLocker.change_Out && dummy.change_Out + timeWindow <= targetLocker.change_Out + timeWindow) ||
+                        (dummy.change_Out >= targetLocker.change_Out && dummyLocker.change_Out <= targetLocker.change_Out + timeWindow)) {
                     encounter++;
-                }
+            }
+
         }
         return encounter;
     }
@@ -288,10 +290,14 @@ public class DevelopingEnvironment {
         assignLocker();
         if(targetLocker != null && !focusPersonLeft) {
             updateNeighbourList();
-            totalEncounters = encounter();
+            if(targetLocker.change_In >= t.currentTime){
+                totalEncounters = encounter();
+            }else if((targetLocker.change_Out+timeWindow)<=t.currentTime){
+                totalEncounters = encounter();
+            }
         }
         updateLockers();
-/*
+        /*
         if(targetLocker!=null && !focusPersonLeft){
             System.out.println("----------------- END OF ROTUINE LOOP ---------");
             System.out.println("**********TARGETLOCKER DETAILS**********");

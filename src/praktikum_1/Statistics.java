@@ -46,10 +46,10 @@ public class Statistics {
      * @param simulatingDay day of simulation
      */
     public void saveData(int simulatingDay) {
-            try{
+           try{
 
                 Logger logger = Logger.getLogger("Simulations_Log");
-                FileHandler fh = new FileHandler("SimulationsLog.log", true);
+                FileHandler fh = new FileHandler("res/SimulationsLog_"+ simulatingDay++ +".log" , true);
                 logger.addHandler(fh);
 
                 SimpleFormatter f = new SimpleFormatter();

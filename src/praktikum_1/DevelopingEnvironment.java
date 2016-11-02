@@ -4,7 +4,7 @@ import java.util.*;
 
 public class DevelopingEnvironment {
 
-    //Amount of Lockers intialized
+    //Amount of Lockers intialized haben
     private int lockerAmount;
     private int simulationDay;
     //List of intialized Lockers

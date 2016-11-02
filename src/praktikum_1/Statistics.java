@@ -3,6 +3,9 @@ package praktikum_1;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Statistics {
 
@@ -50,14 +53,7 @@ public class Statistics {
      * @param simulatingDay day of simulation
      */
     public void saveData(int simulatingDay) {
-        try (FileWriter fw = new FileWriter("res/output.txt", true);
-             BufferedWriter bw = new BufferedWriter(fw);
-             PrintWriter out = new PrintWriter(bw)) {
-            out.println("\n\n" + stringRepresentation(simulatingDay) + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-           /* try{
+            try{
 
                 Logger logger = Logger.getLogger("Simulations_Log");
                 FileHandler fh = new FileHandler("SimulationsLog.log", true);
@@ -78,7 +74,7 @@ public class Statistics {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }*/
+            }
     }
 
     /**

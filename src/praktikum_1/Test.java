@@ -21,43 +21,65 @@ import java.util.*;
  */
 public class Test {
     public static void main(String[] args) throws IOException {
+
         long openingHours = Long.parseLong(args[0]);
-        long arrival = Long.parseLong(args[1]);
-        long timewindow = Long.parseLong(args[2]);
+        long vipArrivalTime = Long.parseLong(args[1]);
+        long timeToChange = Long.parseLong(args[2]);
         int daysOfSimulation = Integer.parseInt(args[3]);
         int lockerAmount = Integer.parseInt(args[4]);
-        double guestProbability = Double.parseDouble(args[5]);
-        Map<String, String> map = new HashMap<>();
-        Map<Float, Long> percentageMap = new HashMap<>();
-        BufferedReader in = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
-        String line = "";
-        DevelopingEnvironment environment;
+        double durationProbability = Double.parseDouble(args[5]);
 
         int total = 0;
         int dummy = 0;
+        int encounter = 0;
+        double averageEncounter;
+        float percentageValue = 0.0f;
+        Map<String, String> map = new HashMap<>();
+        Map<Float, Long> percentageMap = new HashMap<>();
         List<String> mapKeys;
+        DevelopingEnvironment environment;
 
-        while ((line = in.readLine()) != null) {
+        BufferedReader reader = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
+        String line = "";
+
+
+        long startTime = System.currentTimeMillis();
+
+        while ((line = reader.readLine()) != null) {
             if (!line.startsWith("#")) {
                 String parts[] = line.split(" ");
                 map.put(parts[0], parts[1]);
                 total += Integer.parseInt(parts[1]);
             }
         }
+
         mapKeys = new ArrayList<>(map.keySet());
-        float percentageValue = 0.0f;
+
         while (dummy < map.size()) {
             float floatDummy = Float.parseFloat(map.get(mapKeys.get(dummy))) / (float) total;
             percentageValue += floatDummy;
             percentageMap.put(percentageValue, Long.parseLong(mapKeys.get(dummy)) * 60);  // value is multiplied with 60 to convert the minutes into seconds
             dummy++;
         }
-        in.close();
+        reader.close();
 
         for (int i = 0; i < daysOfSimulation; i++) {
-        //    System.out.println("--- LETS START THE SIMULATION ---\n");
-            environment = new DevelopingEnvironment(lockerAmount, (i + 1), openingHours, arrival, timewindow, percentageMap, guestProbability);
+            environment = new DevelopingEnvironment(lockerAmount, (i + 1), openingHours, vipArrivalTime, timeToChange, percentageMap, durationProbability);
             environment.simulate();
+            encounter = encounter + environment.getEncounters();
+            //System.out.println("Simulation of Day " + i + " completed.\n");
         }
+
+        System.out.println(encounter + " Encounters in " +daysOfSimulation + " days.");
+        averageEncounter = (double) encounter / (double) 10;
+        long endTime   = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        int seconds = (int) (totalTime / 1000) % 60 ;
+        int month = daysOfSimulation / 40;
+        double monthlyAverage = averageEncounter / (double) month;
+        System.out.println("The Simulation took " + seconds + " seconds to simulate. For " + daysOfSimulation+" days.\n");
+        System.out.println("Average Encounter in " + daysOfSimulation
+                + " days of Simulation for the VIP is " + averageEncounter);
+        System.out.println("Average Encounter per Month is " + monthlyAverage);
     }
 }

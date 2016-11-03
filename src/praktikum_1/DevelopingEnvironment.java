@@ -4,71 +4,59 @@ import java.util.*;
 
 public class DevelopingEnvironment {
 
-    //Amount of Lockers intialized
+    private Time time;
+    private Statistics statistics;
+
     private int lockerAmount;
     private int simulationDay;
-    //List of intialized Lockers
-    private List<Locker> lockers;
-    //List of occupied Neighbours of the Focus Person
-    private List<Integer> occupiedNeighbours;
-    //List of free Neighbours of the Focus Person
-    private List<Integer> freeNeighbours;
-    //time the studio opens
-    private long openingHours;
-    //time the studio closes
-    private long closingTime;
-    private long currentTime;
-    //time window for people changing in the locker room && timeWindow for vip arrvial
-    private long timeWindow;
-    //probability that a guest arrvies at the gym
-    private double guestProbabilty;
-    //time the Focus Person is expected to come
-    private long timeOfArrivalOfFocusPerson;
-    //shows if the Focus Person is in the studio
-    private boolean focusPersonArrived;
-    //shows if the Focus Person has been assigned a Locker
-    private boolean focusLockerAssigned;
-    //shows if the Focus Person is gone
-    private boolean focusPersonLeft;
-    //shows how many encounters the Focus Person had
-    private int totalEncounters;
-    //amount of persons for a certain time
+    private int vipEncounters;
     private int dailyAmount;
-    //Locker for multiple uses
+
+    private long openingHours;
+    //private long closingTime;
+    //private long currentTime;
+    private long timeToChange;
+    private long arrivalTimeVIP;
+    private long timeOfArrival;
+
+    private double guestProbability;
+
+    private boolean vipArrived;
+    private boolean vipLockerAssigned;
+    private boolean vipLeft;
+    private boolean encounterOnEnter;
+    private boolean encounterOnExit;
+
     private Locker dummyLocker;
-    //Locker of the Focus Person
     private Locker targetLocker;
-    int in;
-    int out;
-    Time t;
-    Statistics s;
 
-    Map<Float, Long> probabilityMap;
+    private List<Locker> lockerList;
+    private List<Integer> occupiedNeighbours;
+    private List<Integer> freeNeighbours;
+    private Map<Float, Long> probabilityMap;
+    private List<Float> percentageArray;
+    private Map<Long, Integer> dailyStats = new HashMap<>();
+    List<Long> diffTimes;
 
-    List<Float> percentageArray;
-    //Map for the daily time distribution for all guests
-    Map<Long, Integer> dailyStats = new HashMap<>();
-    Locker l1,l2,l3,l4,l5,l6,l7,l8,l9,l10;
-    List<Locker> lockerss = new LinkedList<>();
 
 
     /**
      * Initializes all Lockers and sets all default values
      */
-    public DevelopingEnvironment(int lockerAmount, int simulationDay, long day, long arrival, long timewindow, Map<Float, Long> percentageMap, double guestProbabilty) {
+    public DevelopingEnvironment(int lockerAmount, int simulationDay, long day, long timeOfArrival, long timeToChange,
+                                 Map<Float, Long> percentageMap, double guestProbability) {
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
+        //this.t = new Time(day); TODO ist in init()
         this.openingHours = day;
-        this.t = new Time(openingHours);
-
-        this.closingTime = t.getDayTime();
-        this.timeOfArrivalOfFocusPerson = t.inSec(arrival);
-        this.timeWindow = timewindow;
-        this.guestProbabilty = guestProbabilty;
-        //    System.out.println("EXPECTED TIME FOR FOCUSPERSON: " + timeOfArrivalOfFocusPerson);
+        this.timeOfArrival = timeOfArrival;
+        // this.t = new Time(openingHours);
+        //this.closingTime = t.getDayTime();
+        //this.arrivalTimeVIP = t.inSec(timeOfArrival); TODO ist in init
+        this.timeToChange = timeToChange;
+        this.guestProbability = guestProbability;
         this.probabilityMap = percentageMap;
         this.dailyAmount = 0;
-        //keys(wahrscheinlichkeiten eine bestimmte zeit zu bleiben) der map als liste und die sortiert um besser vergleichen zu können
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
         Collections.sort(percentageArray);
         init();
@@ -77,26 +65,25 @@ public class DevelopingEnvironment {
     /**
      * Assignes a random locker to a Person
      */
-    public void assignLocker() {
-        Locker l;
-        int number = randomLockerNumber();
-        l = lockers.get(number);
+    private void assignLocker() {
+        Locker locker;
+
+        int lockerNr = randomLockerNumber();
+        locker = lockerList.get(lockerNr);
         long duration = getRandomDuration();
-        dailyAmount = s.getMap().get(t.inMin(duration));
-        //System.out.println(dailyAmount);
-        dailyAmount++;
-        s.getMap().replace(t.inMin(duration), dailyAmount);
-        l.setOccupied(true);
-        l.setChange_In(t.getCurrentTime() + timeWindow);
-        l.setChange_Out(t.getCurrentTime() + duration - timeWindow);
-        l.setDuration(duration);
-        lockers.set(l.getLockerNumber(), l);
-        if (focusPersonArrived && targetLocker == null && !focusPersonLeft) {
-            targetLocker = l;
-            focusLockerAssigned = true;
-            //        System.out.println("FocusPerson arrived his locker number is ---------" + targetLocker.getLockerNumber());
+        locker.setOccupied(true);
+        locker.setChangeOnArrival(time.getCurrentTime() + timeToChange);
+        locker.setChangeOnDeparture(time.getCurrentTime() + duration - timeToChange);
+        locker.setDuration(duration);
+        lockerList.set(locker.getLockerNumber(), locker);
+        if (vipArrived && targetLocker == null && !vipLeft) {
+            targetLocker = locker;
+            vipLockerAssigned = true;
         }
-        //s.updateDurationFrequency(duration);
+
+        dailyAmount = statistics.getMap().get(time.inMin(duration));
+        dailyAmount++;
+        statistics.getMap().replace(time.inMin(duration), dailyAmount);
     }
 
     /**
@@ -115,13 +102,13 @@ public class DevelopingEnvironment {
             }
             compare = percentageArray.get(q);
         }
-        //    System.out.println("GUESTTIME: " + guestTime);
         return guestTime;
     }
 
 
     private void freeLocker(int lockerNr){
-        Locker l;
+        Locker locker;
+
         if(occupiedNeighbours.size() != 0){
             for(int i = 0; i < occupiedNeighbours.size() - 1; i++){
                 if(lockerNr == occupiedNeighbours.get(i))
@@ -129,16 +116,12 @@ public class DevelopingEnvironment {
             }
         }
 
-        if(targetLocker != null && targetLocker.getLockerNumber() == lockerNr){
-            //        System.out.println("FOCUS PERSON IS NOW GONE...");
-            focusPersonLeft = true;
-        }
+        if(targetLocker != null && targetLocker.getLockerNumber() == lockerNr)
+            vipLeft = true;
 
-        l = lockers.get(lockerNr);
-        //l = lockerss.get(lockerNr);
-        l.releaseLocker();
-        lockers.set(lockerNr, l);
-        //lockerss.set(lockerNr, l);
+        locker = lockerList.get(lockerNr);
+        locker.releaseLocker();
+        lockerList.set(lockerNr, locker);
     }
 
     /**
@@ -146,21 +129,17 @@ public class DevelopingEnvironment {
      * is up and frees it if so
      */
     private void updateLockers() {
-        Locker l;
+        Locker locker;
         for(int i = 0; i < lockerAmount; i++) {
-            l = lockers.get(i);
-            //l = lockerss.get(i);
-            if (l.isOccupied() && timeUp(l.getLockerNumber())){
-                //            System.out.println("------------------------------\nES WIRD JETZT FREI GESETZT" + l.getLockerNumber()+ "------------------------------\n");
-                freeLocker(l.getLockerNumber());
-            }
+            locker = lockerList.get(i);
+            if (locker.isOccupied() && timeUp(locker.getLockerNumber()))
+                freeLocker(locker.getLockerNumber());
         }
     }
 
     private boolean timeUp(int lockerNr) {
-        Locker l = lockers.get(lockerNr);
-        //Locker l = lockerss.get(lockerNr);
-        return l.change_Out < t.getCurrentTime();
+        Locker locker = lockerList.get(lockerNr);
+        return locker.changeOnDeparture < time.getCurrentTime();
     }
 
     /**
@@ -170,7 +149,7 @@ public class DevelopingEnvironment {
      */
     public boolean checkForVisitor() {
         double probability = Math.random();
-        return probability <= guestProbabilty;
+        return probability <= guestProbability;
     }
 
     /**
@@ -178,16 +157,14 @@ public class DevelopingEnvironment {
      */
     private int randomLockerNumber() {
         int lockerNumber;
-        Random r = new Random();
-        Locker l;
+        Random rnd = new Random();
+        Locker locker;
 
         while (true) {
-            lockerNumber = r.nextInt(lockerAmount);
-            l = lockers.get(lockerNumber);
-            //l = lockerss.get(lockerNumber);
-            if (!l.isOccupied()) {
+            lockerNumber = rnd.nextInt(lockerAmount);
+            locker = lockerList.get(lockerNumber);
+            if (!locker.isOccupied())
                 return lockerNumber;
-            }
         }
     }
 
@@ -195,74 +172,63 @@ public class DevelopingEnvironment {
      * Checks if the time is due for the Focus
      * Person to be entering the Studio
      */
-    public void checkForFocusPerson() {
-        if (t.getCurrentTime() > timeOfArrivalOfFocusPerson - timeWindow && t.getCurrentTime() < timeOfArrivalOfFocusPerson + timeWindow
-                && !focusPersonArrived && !focusLockerAssigned) {
-            focusPersonArrived = true;
-            //        System.out.println("AKTUELLE ZEIT " + t.getCurrentTime());
-            //        System.out.println("ARRIVAL ZEIT " + timeOfArrivalOfFocusPerson);
-        }
-
+    private void checkForFocusPerson() {
+        if (time.getCurrentTime() > arrivalTimeVIP - timeToChange && time.getCurrentTime() < arrivalTimeVIP + timeToChange
+                && !vipArrived && !vipLockerAssigned)
+            vipArrived = true;
     }
 
-    public void updateNeighbourList(){
-        Locker dummyLocker;
-
+    private void updateNeighbourList(){
+        Locker locker;
         occupiedNeighbours.clear();
         freeNeighbours.clear();
 
         for(int i = 0; i < targetLocker.neighbours.size(); i++){
-            dummyLocker = lockers.get(targetLocker.neighbours.get(i));
-            //dummyLocker = lockerss.get(targetLocker.neighbours.get(i));
-            if (dummyLocker.isOccupied()) {
-                occupiedNeighbours.add(dummyLocker.getLockerNumber());
-                //            System.out.println("Besetzte Neighbours sind jetzt\n" + occupiedNeighbours.toString());
-            }
+            locker = lockerList.get(targetLocker.neighbours.get(i));
+            if (locker.isOccupied())
+                occupiedNeighbours.add(locker.getLockerNumber());
             else
-            {
-                freeNeighbours.add(dummyLocker.getLockerNumber());
-                //            System.out.println("Free Neighbours sind jetzt\n" + freeNeighbours.toString());
-            }
+                freeNeighbours.add(locker.getLockerNumber());
         }
     }
 
-    //TODO WEITERE ABZWIEIGUNGNGNGNGNGNGNNGNGN
-    //TODO FÜR MALTE
-    public int encounter(){
-        Locker dummy;
+    private int encounter(){
+        Locker locker;
+
+        if(encounterOnEnter && encounterOnExit) return 2;
 
         for(int i = 0; i < occupiedNeighbours.size(); i++){
-            dummy = lockers.get(occupiedNeighbours.get(i));
-            //dummy = lockerss.get(occupiedNeighbours.get(i));
-            //subtracting the time of change
-            long dIn1 = dummy.change_In - timeWindow;
-            long dIn2 = dummy.change_In;
-            long dOut1 = dummy.change_Out;
-            long dOut2 = dummy.change_Out + timeWindow;
+            locker = lockerList.get(occupiedNeighbours.get(i));
+            long dIn1 = locker.changeOnArrival - timeToChange;
+            long dIn2 = locker.changeOnArrival;
+            long dOut1 = locker.changeOnDeparture;
+            long dOut2 = locker.changeOnDeparture + timeToChange;
 
-            long tIn1 = targetLocker.change_In - timeWindow;
-            long tIn2 = targetLocker.change_In;
-            long tOut1 = targetLocker.change_Out;
-            long tOut2 = targetLocker.change_Out + timeWindow;
-            if(in == 0) {
+            long tIn1 = targetLocker.changeOnArrival - timeToChange;
+            long tIn2 = targetLocker.changeOnArrival;
+            long tOut1 = targetLocker.changeOnDeparture;
+            long tOut2 = targetLocker.changeOnDeparture + timeToChange;
+
+
+            if(!encounterOnEnter) {
                 if ((dIn1 <= tIn1 && dIn2 >= tIn1 && dIn2 <= tIn2) ||
                         (dIn1 >= tIn1 && dIn1 <= tIn2 && dIn2 >= tIn2) ||
                         (dOut1 <= tIn1 && dOut2 >= tIn1 && dOut2 <= tIn2) ||
                         (dOut1 >= tIn1 && dOut1 <= tIn2 && dOut2 >= tIn2)) {
-                    in = 1;
+                    encounterOnEnter = true;
                 }
             }
-            if(out == 0) {
+            if(!encounterOnExit) {
                 if ((dIn1 <= tOut1 && dIn2 >= tOut1 && dIn2 <= tOut2) ||
                         (dIn1 >= tOut1 && dIn1 <= tOut2 && dIn2 >= tOut2) ||
                         (dOut1 <= tOut1 && dOut2 >= tOut1 && dOut2 <= tOut2) ||
                         (dOut1 >= tOut1 && dOut1 <= tOut2 && dOut2 >= tOut2)) {
-                    out = 1;
+                    encounterOnExit = true;
                 }
             }
         }
-        if(in == 1 && out == 1) return 2;
-        if(in == 1 && out == 0 || in == 0 && out == 1) return 1;
+
+        if(encounterOnEnter && !encounterOnExit || !encounterOnEnter && encounterOnExit) return 1;
         return 0;
     }
 
@@ -270,117 +236,69 @@ public class DevelopingEnvironment {
      * Initializes all parameters for the Simulation
      */
     public void init() {
-        //    System.out.println("- INTIALIZING ...");
-        lockers = new LinkedList<>();
+
+        statistics = new Statistics(dailyStats);
+        time = new Time(openingHours);
+
+        vipEncounters = 0;
+        arrivalTimeVIP = time.inSec(timeOfArrival);
+
+        vipArrived = false;
+        vipLockerAssigned = false;
+        vipLeft = false;
+        encounterOnEnter = false;
+        encounterOnExit = false;
+
+        diffTimes = new ArrayList<>(probabilityMap.values());
+        lockerList = new LinkedList<>();
         occupiedNeighbours = new LinkedList<>();
         freeNeighbours = new LinkedList<>();
-        focusPersonArrived = false;
-        focusLockerAssigned = false;
-        focusPersonLeft = false;
-        totalEncounters = 0;
-        in = 0;
-        out = 0;
-        List<Long> diffTimes = new ArrayList<>(probabilityMap.values());
+
         for (long l : diffTimes) {
-            dailyStats.put(t.inMin(l), 0);
+            dailyStats.put(time.inMin(l), 0);
         }
-        s = new Statistics(dailyStats);
-       for (int i = 0; i < lockerAmount; i++) {
+
+        for (int i = 0; i < lockerAmount; i++) {
             dummyLocker = new Locker(i, false, 0, 0, 0, null);
             dummyLocker.setNeighbours(dummyLocker.getLockerNumber(), lockerAmount);
-            lockers.add(i, dummyLocker);
+            lockerList.add(i, dummyLocker);
         }
-/*
-        //0
-        lockerss.add(0, l1 = new Locker(0,true, 30, 90, 100, null));
-        l1.setNeighbours(0, 10);
+   }
 
-        //1
-        lockerss.add(1, l2 = new Locker(1,true, 30, 90, 100, null));
-        l2.setNeighbours(1, 10);
-
-        //2
-        lockerss.add(2, l3 = new Locker(2,true, 30, 90, 100, null));
-        l3.setNeighbours(2, 10);
-
-        //3
-        lockerss.add(3, l4 = new Locker(3,true, 30, 110, 120, null));
-        l4.setNeighbours(3, 10);
-
-        //4
-        lockerss.add(4, l5 = new Locker(4,true, 30, 90, 100, null));
-        l5.setNeighbours(4, 10);
-
-        //5
-        lockerss.add(5, l6 = new Locker(5,true, 70, 120, 90, null));
-        l6.setNeighbours(5, 10);
-
-        //6
-        lockerss.add(6, l7 = new Locker(6,true, 30, 90, 100, null));
-        l7.setNeighbours(6, 10);
-
-        //7
-        lockerss.add(7, l8 = new Locker(7,true, 60, 90, 70, null));
-        l8.setNeighbours(7, 10);
-
-        //8
-        lockerss.add(8, l9 = new Locker(8,true, 30, 90, 100, null));
-        l9.setNeighbours(8, 10);
-
-        //09
-        lockerss.add(9, l10 = new Locker(9,true, 30, 90, 100, null));
-        l10.setNeighbours(9, 10);
-
-        targetLocker = lockerss.get(l6.getLockerNumber());
- */   }
+   public int getEncounters(){return vipEncounters;}
 
     /**
      * Simulates the whole Environment/Scenario
      */
     public void simulate() {
-           System.out.println("- ENTER simulate()\n");
-        while (t.currentTime < t.time) {
+        while (time.currentTime < time.time) {
             routine();
-            t.timeInterval();
+            time.timeInterval();
         }
-        //    System.out.println("ENDING DAY");
-        //    System.out.println("DAAAAYYY: " + simulationDay);
-        s.saveData(simulationDay);
-        System.out.println("ENCOUNTERS TODAY: "+totalEncounters + " \n");
+        //TODO MUSS WIEDER REIN
+        //statistics.saveData(simulationDay);
+        //System.out.println("ENCOUNTERS TODAY: "+ vipEncounters);
     }
 
-    //TODO MUSS AM ENDE RAUS IST NUR DAFÜR DA DAMIT DIE LOCKER DETAILS NUR EINMAL ANGZEIGT WERDEN
-    int i = 0;
     /**
      * Settles the Procedure of the Simulation
      */
     private void routine() {
-        //    System.out.println("- ENTER routine()");
+
        if (!checkForVisitor()) {
             updateLockers();
-    //        System.out.println("- No customer is coming ...\n");
             return;
-        }
-    //    System.out.println("- Customer is coming ...\n");
-        checkForFocusPerson();
-        assignLocker();
-       if(targetLocker != null && !focusPersonLeft) {
-            updateNeighbourList();
-            if(targetLocker.change_In >= t.currentTime){
-                totalEncounters = encounter();
-            }else if((targetLocker.change_Out+timeWindow)<=t.currentTime){
-                totalEncounters = encounter();
-            }
-        }
-        updateLockers();
-
-     /*   if(targetLocker!=null && !focusPersonLeft && i==0){
-            System.out.println("----------------- END OF ROTUINE LOOP ---------");
-            System.out.println("**********TARGETLOCKER DETAILS**********");
-            System.out.println(targetLocker.toString()+"\n");
-            System.out.println("DIE BESETZTEN NACHABRN" + occupiedNeighbours.toString());
-            System.out.println("DIE FREIEN NACHABRN" + freeNeighbours.toString()+"\n\n");
-            i++;
-        }
-    */}
+       }
+       checkForFocusPerson();
+       assignLocker();
+       if(targetLocker != null && !vipLeft) {
+           updateNeighbourList();
+           if(targetLocker.changeOnArrival >= time.currentTime){
+               vipEncounters = encounter();
+           }else if((targetLocker.changeOnDeparture + timeToChange) <= time.currentTime){
+               vipEncounters = encounter();
+           }
+       }
+       updateLockers();
+    }
 }

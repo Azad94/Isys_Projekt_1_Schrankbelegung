@@ -13,12 +13,12 @@ public class DevelopingEnvironment {
     private int dailyAmount;
 
     private long openingHours;
-    //private long closingTime;
-    //private long currentTime;
     private long timeToChange;
     private long arrivalTimeVIP;
     private long timeOfArrival;
 
+    //test
+    private long a = 10;
     private double guestProbability;
 
     private boolean vipArrived;
@@ -27,6 +27,7 @@ public class DevelopingEnvironment {
     private boolean encounterOnEnter;
     private boolean encounterOnExit;
 
+    private Random rnd;
     private Locker dummyLocker;
     private Locker targetLocker;
 
@@ -50,6 +51,7 @@ public class DevelopingEnvironment {
         //this.t = new Time(day); TODO ist in init()
         this.openingHours = day;
         this.timeOfArrival = timeOfArrival;
+        this.rnd = new Random();
         // this.t = new Time(openingHours);
         //this.closingTime = t.getDayTime();
         //this.arrivalTimeVIP = t.inSec(timeOfArrival); TODO ist in init
@@ -93,7 +95,6 @@ public class DevelopingEnvironment {
      */
     private long getRandomDuration() {
         Long guestTime = 0l;
-        Random rnd = new Random();
         float rndFloat = rnd.nextFloat();
         float compare = 0.0f;
         for (int q = 0; q < percentageArray.size(); q++) {
@@ -157,7 +158,6 @@ public class DevelopingEnvironment {
      */
     private int randomLockerNumber() {
         int lockerNumber;
-        Random rnd = new Random();
         Locker locker;
 
         while (true) {
@@ -194,9 +194,26 @@ public class DevelopingEnvironment {
 
     private int encounter(){
         Locker locker;
-
         if(encounterOnEnter && encounterOnExit) return 2;
-
+        if(targetLocker.isOccupied() && targetLocker.isChangingIn(time.getCurrentTime()) && !encounterOnEnter){
+            for(int i : occupiedNeighbours){
+                locker = lockerList.get(i);
+                if(locker.isChangingIn(time.getCurrentTime())|| locker.isChangingOut(time.getCurrentTime())){
+                    encounterOnEnter = true;
+                    break;
+                }
+            }
+        }
+        if(targetLocker.isOccupied() && targetLocker.isChangingOut(time.getCurrentTime()) && !encounterOnExit){
+            for(int i : occupiedNeighbours){
+                locker = lockerList.get(i);
+                if(locker.isChangingIn(time.getCurrentTime())|| locker.isChangingOut(time.getCurrentTime())){
+                    encounterOnExit = true;
+                    break;
+                }
+            }
+        }
+        /*
         for(int i = 0; i < occupiedNeighbours.size(); i++){
             locker = lockerList.get(occupiedNeighbours.get(i));
             long dIn1 = locker.changeOnArrival - timeToChange;
@@ -227,8 +244,8 @@ public class DevelopingEnvironment {
                 }
             }
         }
-
-        if(encounterOnEnter && !encounterOnExit || !encounterOnEnter && encounterOnExit) return 1;
+           */
+        if((encounterOnEnter && !encounterOnExit) || (!encounterOnEnter && encounterOnExit)) return 1;
         return 0;
     }
 
@@ -236,6 +253,7 @@ public class DevelopingEnvironment {
      * Initializes all parameters for the Simulation
      */
     public void init() {
+
 
         statistics = new Statistics(dailyStats);
         time = new Time(openingHours);
@@ -271,9 +289,19 @@ public class DevelopingEnvironment {
      * Simulates the whole Environment/Scenario
      */
     public void simulate() {
-        while (time.currentTime < time.time) {
+        while (time.getCurrentTime() < time.getDayTime()) {
+            int i = 0;
             routine();
             time.timeInterval();
+            for(Locker l: lockerList){
+               if(l.isOccupied()){
+                   i++;
+               }
+            }
+            if(time.getCurrentTime() == a){
+               // System.out.println("LOCKER BELEGT: " + i);
+                a += 3600;
+            }
         }
         //TODO MUSS WIEDER REIN
         //statistics.saveData(simulationDay);
@@ -293,9 +321,9 @@ public class DevelopingEnvironment {
        assignLocker();
        if(targetLocker != null && !vipLeft) {
            updateNeighbourList();
-           if(targetLocker.changeOnArrival >= time.currentTime){
+           if(targetLocker.changeOnArrival >= time.getCurrentTime()){
                vipEncounters = encounter();
-           }else if((targetLocker.changeOnDeparture + timeToChange) <= time.currentTime){
+           }else if((targetLocker.changeOnDeparture + timeToChange) <= time.getCurrentTime()){
                vipEncounters = encounter();
            }
        }

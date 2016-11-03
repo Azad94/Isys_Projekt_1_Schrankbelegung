@@ -67,19 +67,20 @@ public class Test {
             environment = new DevelopingEnvironment(lockerAmount, (i + 1), openingHours, vipArrivalTime, timeToChange, percentageMap, durationProbability);
             environment.simulate();
             encounter = encounter + environment.getEncounters();
-            //System.out.println("Simulation of Day " + i + " completed.\n");
+            System.out.println("Simulation of Day " + i + " completed.\n");
         }
 
         System.out.println(encounter + " Encounters in " +daysOfSimulation + " days.");
+        System.out.println("Encounter pro Tag: " +(double) ((double) encounter/ (double) daysOfSimulation));
         averageEncounter = (double) encounter / (double) 10;
-        long endTime   = System.currentTimeMillis();
+        /*long endTime   = System.currentTimeMillis();
         long totalTime = endTime - startTime;
-        int seconds = (int) (totalTime / 1000) % 60 ;
+        int seconds = (int) (totalTime / 1000) % 60 ;*/
         int month = daysOfSimulation / 10;
-        double monthlyAverage = averageEncounter / (double) month;
+        double monthlyAverage = averageEncounter / (double) month;/*
         System.out.println("The Simulation took " + seconds + " seconds to simulate. For " + daysOfSimulation+" days.\n");
         System.out.println("Average Encounter in " + daysOfSimulation
-                + " days of Simulation for the VIP is " + averageEncounter);
+                + " days of Simulation for the VIP is " + averageEncounter);*/
         System.out.println("Average Encounter per Month is " + monthlyAverage);
     }
 }

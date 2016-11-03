@@ -32,7 +32,7 @@ public class Statistics {
      *
      * @param simulatingDay day of simulation
      */
-    public void saveData(int simulatingDay) {
+    public void saveData(int simulatingDay, int sendHome) {
 
         try{
             Logger logger = Logger.getLogger("LogDay_Log");

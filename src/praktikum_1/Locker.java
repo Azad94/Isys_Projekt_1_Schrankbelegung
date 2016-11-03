@@ -79,14 +79,15 @@ public class Locker {
     }
     public boolean isChangingIn(long time){
         if(this.changeOnArrival-300<=time && time<= this.changeOnArrival){
-        return true;}
+            return true;
+        }
         return false;
     }
     public boolean isChangingOut(long time) {
-        if(this.changeOnDeparture<=time && time <= this.changeOnDeparture+300){
+        if(time >= this.changeOnDeparture && time <= this.changeOnDeparture+300){
             return true;
         }
-        return true;
+        return false;
     }
     /**
      * Searches for the neighbours of the Locker from the Focus Person.

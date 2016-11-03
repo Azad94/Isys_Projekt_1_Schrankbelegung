@@ -2,8 +2,8 @@ package praktikum_1;
 
 public class Time {
 
-    long time;
-    long currentTime;
+    private long time;
+    private long currentTime;
 
     /**
      * Constructor

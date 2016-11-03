@@ -13,8 +13,8 @@ public class Locker {
 
     int locker_number;
     boolean occupied = false;
-    long change_In;
-    long change_Out;
+    long changeOnArrival;
+    long changeOnDeparture;
     long duration;
     List<Integer> neighbours;
 
@@ -22,16 +22,16 @@ public class Locker {
     /**
      * @param locker_number number of this Locker
      * @param occupied      shows if this Locker is in use
-     * @param change_In     the time he'll be finished changing at the beginning
-     * @param change_Out    the time he'll be finished changing at the end
+     * @param changeOnArrival     the time he'll be finished changing at the beginning
+     * @param changeOnDeparture    the time he'll be finished changing at the end
      * @param duration      time this locker is occupied
      * @param neighbours    list of neighbours from this locker
      */
-    public Locker(int locker_number, boolean occupied, long change_In, long change_Out, long duration, List<Integer> neighbours) {
+    public Locker(int locker_number, boolean occupied, long changeOnArrival, long changeOnDeparture, long duration, List<Integer> neighbours) {
         this.locker_number = locker_number;
         this.occupied = occupied;
-        this.change_In = change_In;
-        this.change_Out = change_Out;
+        this.changeOnArrival = changeOnArrival;
+        this.changeOnDeparture = changeOnDeparture;
         this.duration = duration;
         this.neighbours = neighbours;
     }
@@ -51,24 +51,17 @@ public class Locker {
     }
 
     /**
-     * @param locker_number locker number to set
+     * @param changeOnArrival change in time to set
      */
-    public void setLocker_number(int locker_number) {
-        this.locker_number = locker_number;
+    public void setChangeOnArrival(long changeOnArrival) {
+        this.changeOnArrival = changeOnArrival;
     }
 
     /**
-     * @param change_In change in time to set
+     * @param changeOnDeparture change out time to set
      */
-    public void setChange_In(long change_In) {
-        this.change_In = change_In;
-    }
-
-    /**
-     * @param change_Out change out time to set
-     */
-    public void setChange_Out(long change_Out) {
-        this.change_Out = change_Out;
+    public void setChangeOnDeparture(long changeOnDeparture) {
+        this.changeOnDeparture = changeOnDeparture;
     }
 
     /**
@@ -84,7 +77,17 @@ public class Locker {
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
-
+    public boolean isChangingIn(long time){
+        if(this.changeOnArrival-300<=time && time<= this.changeOnArrival){
+        return true;}
+        return false;
+    }
+    public boolean isChangingOut(long time) {
+        if(this.changeOnDeparture<=time && time <= this.changeOnDeparture+300){
+            return true;
+        }
+        return true;
+    }
     /**
      * Searches for the neighbours of the Locker from the Focus Person.
      * Regarding which Locker the Focus Person has it's neighbours
@@ -110,8 +113,6 @@ public class Locker {
                 neighbours.add(locker_number + 1);
                 neighbours.add(locker_number + 2);
             }
-
-
         }
         //checks if the Locker is at the beginning
         else if (locker_number < 3) {
@@ -147,8 +148,8 @@ public class Locker {
      */
     public void releaseLocker() {
         this.occupied = false;
-        this.change_In = 0;
-        this.change_Out = 0;
+        this.changeOnArrival = 0;
+        this.changeOnDeparture = 0;
         this.duration = 0;
     }
 
@@ -160,8 +161,8 @@ public class Locker {
         StringBuilder builder = new StringBuilder();
         builder.append("Locker Number : " + this.locker_number + "\n");
         builder.append("Occupied : " + this.occupied + "\n");
-        builder.append("Change In: " + this.change_In + "\n");
-        builder.append("Change Out : " + this.change_Out + "\n");
+        builder.append("Change In: " + this.changeOnArrival + "\n");
+        builder.append("Change Out : " + this.changeOnDeparture + "\n");
         builder.append("Duration : " + this.duration + "\n");
         builder.append("Neighbours : " + this.neighbours + "\n");
         return builder.toString();

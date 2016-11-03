@@ -10,7 +10,7 @@ import java.util.logging.SimpleFormatter;
 public class Statistics {
 
     Map<Long, Integer> durationFrequency = new HashMap<>();
-    int day;
+
 
     /**
      * Constructor
@@ -21,24 +21,11 @@ public class Statistics {
      */
     public Statistics(Map<Long, Integer> map) {
         this.durationFrequency = map;
-        this.day = 0;
     }
+
     public Map<Long, Integer> getMap(){
         return this.durationFrequency;
     }
-
-   /* /**
-     * Updates the frequency of the duration
-     * recently assigned.
-     *
-     * @param durationTime key to search for in the map
-     */
-   /* public void updateDurationFrequency(long durationTime) {
-        //braucht man diese If oder gehen wir davon einfach aus das man nur Zeiten wählen
-        //kann die es auch nur wirklich gibt
-        // if(durationFrequency.containsKey(durationTime))
-        durationFrequency.put(durationTime, durationFrequency.get(durationTime) + 1);
-    }*/
 
     /**
      * Writes the collected duration frequencies into a file
@@ -46,30 +33,29 @@ public class Statistics {
      * @param simulatingDay day of simulation
      */
     public void saveData(int simulatingDay) {
-           try{
 
-                Logger logger = Logger.getLogger("Simulations_Log");
-                FileHandler fh = new FileHandler("res/SimulationsLog_"+ simulatingDay++ +".log" , true);
-                logger.addHandler(fh);
+        try{
+            Logger logger = Logger.getLogger("LogDay_Log");
+            FileHandler fh = new FileHandler("res/LogDay_"+ simulatingDay + ".log");
+            logger.addHandler(fh);
 
-                SimpleFormatter f = new SimpleFormatter();
-                fh.setFormatter(f);
-                logger.setUseParentHandlers(false);
+            SimpleFormatter f = new SimpleFormatter();
+            fh.setFormatter(f);
+            logger.setUseParentHandlers(false);
 
-                logger.info("\n\n" + stringRepresentation(simulatingDay) + "\n");
-                int gesamt = 0;
-                for(int i: durationFrequency.values()){
-                    gesamt += i;
-                }
-                System.out.println("Personen Gesamt: " + gesamt);
-
-            }catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            logger.info("\n\n" + stringRepresentation(simulatingDay) + "\n");
+            int gesamt = 0;
+            for(int i: durationFrequency.values()){
+                gesamt += i;
             }
-    }
+            //System.out.println("Personen Gesamt: " + gesamt);
 
+        }catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Creates a String representation of the map
      * with the duration frequencies

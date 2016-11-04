@@ -18,6 +18,7 @@ import java.util.*;
  * index 3: number of days for the simulation                   // we used 10
  * index 4: amount of lockers in the studio                     // we used 150
  * index 5: probability that a person arrives at the gym        // we used 0.1
+ * index 6: random distribution or with strategy                // true for random
  */
 public class Test {
     public static void main(String[] args) throws IOException {
@@ -28,6 +29,7 @@ public class Test {
         int daysOfSimulation = Integer.parseInt(args[3]);
         int lockerAmount = Integer.parseInt(args[4]);
         double durationProbability = Double.parseDouble(args[5]);
+        boolean random = Boolean.valueOf(args[6]);
 
         int total = 0;
         int dummy = 0;
@@ -64,10 +66,10 @@ public class Test {
         reader.close();
 
         for (int i = 0; i < daysOfSimulation; i++) {
-            environment = new DevelopingEnvironment(lockerAmount, (i + 1), openingHours, vipArrivalTime, timeToChange, percentageMap, durationProbability);
+            environment = new DevelopingEnvironment(lockerAmount, (i + 1), openingHours, vipArrivalTime, timeToChange, percentageMap, durationProbability, random);
             environment.simulate();
             encounter = encounter + environment.getEncounters();
-            System.out.println("Simulation of Day " + i + " completed.\n");
+          //  System.out.println("Simulation of Day " + i + " completed.\n");
         }
 
         System.out.println(encounter + " Encounters in " +daysOfSimulation + " days.");

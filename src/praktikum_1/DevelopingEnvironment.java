@@ -27,6 +27,8 @@ public class DevelopingEnvironment {
     private boolean vipLeft;
     private boolean encounterOnEnter;
     private boolean encounterOnExit;
+    //random or strategy
+    private boolean random;
 
     private Random rnd;
     private Locker dummyLocker;
@@ -46,7 +48,7 @@ public class DevelopingEnvironment {
      * Initializes all Lockers and sets all default values
      */
     public DevelopingEnvironment(int lockerAmount, int simulationDay, long day, long timeOfArrival, long timeToChange,
-                                 Map<Float, Long> percentageMap, double guestProbability) {
+                                 Map<Float, Long> percentageMap, double guestProbability, boolean random) {
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
         //this.t = new Time(day); TODO ist in init()
@@ -54,6 +56,7 @@ public class DevelopingEnvironment {
         this.timeOfArrival = timeOfArrival;
         this.rnd = new Random();
         this.sendHome = 0;
+        this.random=random;
         // this.t = new Time(openingHours);
         //this.closingTime = t.getDayTime();
         //this.arrivalTimeVIP = t.inSec(timeOfArrival); TODO ist in init
@@ -71,8 +74,12 @@ public class DevelopingEnvironment {
      */
     private void assignLocker() {
         Locker locker;
-
-        int lockerNr = randomLockerNumber();
+        int lockerNr;
+        if(random) {
+            lockerNr = randomLockerNumber();
+        }else{
+            lockerNr = strategyLockerNumber();
+        }
         if (lockerNr == -1) {
             //System.out.println("!!\nDas Studio ist leider voll\n!!");
             sendHome++;
@@ -194,6 +201,40 @@ public class DevelopingEnvironment {
         }
     }
 
+    private int strategyLockerNumber() {
+        int indexOne = 0;
+        int indexTwo = 1;
+        boolean plus5 = false;
+        while(indexOne < lockerList.size()) {
+            if (!lockerList.get(indexOne).isOccupied()) {
+                return lockerList.get(indexOne).getLockerNumber();
+            }
+            if(!plus5){
+                indexOne += 5;
+                plus5 = true;
+            }
+            else{
+                indexOne+=3;
+                plus5 =false;
+            }
+        }
+
+        while(indexTwo < lockerList.size()) {
+            if (!lockerList.get(indexTwo).isOccupied()) {
+                return lockerList.get(indexTwo).getLockerNumber();
+            }
+            if(!plus5){
+                indexTwo += 5;
+                plus5 = true;
+            }
+            else{
+                indexTwo+=3;
+                plus5 =false;
+            }
+        }
+
+        return randomLockerNumber();
+    }
     /**
      * Checks if the time is due for the Focus
      * Person to be entering the Studio
@@ -276,7 +317,7 @@ public class DevelopingEnvironment {
                         (dOut1 <= tIn1 && dOut2 >= tIn1 && dOut2 <= tIn2) ||
                         (dOut1 >= tIn1 && dOut1 <= tIn2 && dOut2 >= tIn2)) {
                     encounterOnEnter = true;
-                    System.out.println("ENCOUNTER ENTER");
+                   // System.out.println("ENCOUNTER ENTER");
                 }
             }
             if(!encounterOnExit) {
@@ -284,7 +325,7 @@ public class DevelopingEnvironment {
                         (dIn1 >= tOut1 && dIn1 <= tOut2 && dIn2 >= tOut2) ||
                         (dOut1 <= tOut1 && dOut2 >= tOut1 && dOut2 <= tOut2) ||
                         (dOut1 >= tOut1 && dOut1 <= tOut2 && dOut2 >= tOut2)) {
-                    System.out.println("ENCOUNTER EXIT");
+                    //System.out.println("ENCOUNTER EXIT");
                     encounterOnExit = true;
                 }
             }
@@ -298,8 +339,6 @@ public class DevelopingEnvironment {
      * Initializes all parameters for the Simulation
      */
     public void init() {
-
-
         statistics = new Statistics(dailyStats);
         time = new Time(openingHours);
 
@@ -353,7 +392,7 @@ public class DevelopingEnvironment {
         }
         //TODO MUSS WIEDER REIN
         //statistics.saveData(simulationDay, sendHome);
-        //System.out.println("ENCOUNTERS TODAY: "+ vipEncounters);
+      //  System.out.println("ENCOUNTERS TODAY: "+ vipEncounters);
     }
 
     /**

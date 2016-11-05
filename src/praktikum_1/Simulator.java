@@ -7,18 +7,16 @@ import java.util.*;
 
 /**
  * CommandLine Arguments:
- * index 0: amount of hours to simulate a day                   // we used 10
- * index 1: hours after opening til focus arrives               // we used 5
- * index 2: time window to look for the focusPerson &&          // we used 300
- * also the timewindow a customer is changing in
- * the lockerroom in seconds
- * example: focusPerson arrives roughly 5h after openHours so
- * the program checks for focusperson between
- * (arrival - timewindow) and (arrival + timewindow)
- * index 3: number of days for the simulation                   // we used 10
- * index 4: amount of lockers in the studio                     // we used 150
- * index 5: probability that a person arrives at the gym        // we used 0.1
- * index 6: random distribution or with strategy                // true for random
+ * index 0: amount of hours to simulate a day
+ * index 1: hour the VIP arrives
+ * index 2: time a visitor changes
+ * index 3: number of days for the simulation
+ * index 4: amount of lockers in the studio
+ * index 5: probability that a Visitor arrives at the gym
+ * index 6: true if random distribution
+ *
+ * @author Malte Grebe
+ * @version 1.0
  */
 public class Simulator {
     public static void main(String[] args) throws IOException {
@@ -77,5 +75,4 @@ public class Simulator {
 
         statistics.saveData(daysOfSimulation, encounter, sendHome, withRandom);
     }
-
 }

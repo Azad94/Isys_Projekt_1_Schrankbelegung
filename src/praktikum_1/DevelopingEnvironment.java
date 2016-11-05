@@ -2,6 +2,15 @@ package praktikum_1;
 
 import java.util.*;
 
+/**
+ * Implements the Scenario Environment.
+ * Contains all the methods and algorithms
+ * needed for the random and strategic
+ * distribution Option.
+ *
+ * @author Sheraz Azad and Malte Grebe
+ * @version 1.0
+ */
 public class DevelopingEnvironment {
 
     private Time time;
@@ -10,16 +19,17 @@ public class DevelopingEnvironment {
     private int lockerAmount;
     private int simulationDay;
     private int vipEncounters;
-    private int dailyAmount;
+    private int durationOccurrence;
+    //visitors which couldn't enter the studio due to overcrowded
     private int sendHome;
-    private int exitCode = -1;
+    private int exitCode;
+
+    private double guestProbability;
 
     private long openingHours;
     private long timeToChange;
-    private long arrivalTimeVip;
     private long timeOfArrival;
-
-    private double guestProbability;
+    private long arrivalTimeVip;
 
     private boolean vipArrived;
     private boolean vipLockerAssigned;
@@ -28,9 +38,9 @@ public class DevelopingEnvironment {
     private boolean encounterOnExit;
     //random or strategy distribution of Lockers
     private boolean withRandom;
-    private boolean stats;
+    private boolean dailyStatistics;
 
-    private Random rnd;
+    private Random random;
     private Locker vipLocker;
 
     private List<Locker> lockerList;
@@ -39,49 +49,62 @@ public class DevelopingEnvironment {
     private List<Integer> freeNeighbours;
     private List<Float> percentageArray;
     private Map<Float, Long> probabilityMap;
-    private Map<Long, Integer> dailyStats = new HashMap<>();
+    private Map<Long, Integer> statisticMap = new HashMap<>();
 
     /**
-     * Initializes all Lockers and sets all default values
+     * Constructor for Initialization of a Developing Environment object.
+     * @param lockerAmount      amount of Lockers created
+     * @param simulationDay     days the Simulation should be simulating
+     * @param openingHours      time the studio is opened
+     * @param timeOfArrival     time when the Vip could enter the studio
+     * @param timeToChange      time a visitor uses for changing
+     * @param percentageMap     map with all duration frequencies
+     * @param guestProbability  probability a visitor could enter the studio
+     * @param withRandom        true if random distribution
+     * @param dailyStatistics   true if daily statistic output is wanted
      */
-    public DevelopingEnvironment(int lockerAmount, int simulationDay, long day, long timeOfArrival, long timeToChange,
-                                 Map<Float, Long> percentageMap, double guestProbability, boolean withRandom, boolean stats) {
+    public DevelopingEnvironment(int lockerAmount, int simulationDay, long openingHours, long timeOfArrival, long timeToChange,
+                                 Map<Float, Long> percentageMap, double guestProbability, boolean withRandom, boolean dailyStatistics) {
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
-        this.openingHours = day;
+        this.openingHours = openingHours;
         this.timeOfArrival = timeOfArrival;
-        this.rnd = new Random();
+        this.random = new Random();
         this.sendHome = 0;
         this.withRandom = withRandom;
-        this.stats = stats;
+        this.dailyStatistics = dailyStatistics;
         this.timeToChange = timeToChange;
         this.guestProbability = guestProbability;
         this.probabilityMap = percentageMap;
-        this.dailyAmount = 0;
+        this.durationOccurrence = 0;
         this.percentageArray = new ArrayList<>(probabilityMap.keySet());
         Collections.sort(percentageArray);
         init();
     }
 
-
+    /**
+     * @return  encounters the VIP had
+     */
     public int getEncounters() {
         return vipEncounters;
     }
 
+    /**
+     * @return  number of Visitors sent Home
+     */
     public int getSendHome() {
         return sendHome;
     }
 
     /**
-     * Initializes all parameters for the Simulation
+     * Initializes lockers and all required and used variables.
      */
     public void init() {
-        Locker locker;
-        List<Long> diffTimes;
-        statistics = new Statistics(dailyStats);
-        time = new Time(openingHours);
+        statistics = new Statistics(statisticMap);
 
         vipEncounters = 0;
+        exitCode = -1;
+        time = new Time(openingHours);
         arrivalTimeVip = time.inSec(timeOfArrival);
 
         vipArrived = false;
@@ -90,13 +113,16 @@ public class DevelopingEnvironment {
         encounterOnEnter = false;
         encounterOnExit = false;
 
+        List<Long> diffTimes;
         diffTimes = new ArrayList<>(probabilityMap.values());
         lockerList = new LinkedList<>();
         occupiedNeighbours = new LinkedList<>();
         freeNeighbours = new LinkedList<>();
 
+        Locker locker;
+
         for (long l : diffTimes) {
-            dailyStats.put(time.inMin(l), 0);
+            statisticMap.put(time.inMin(l), 0);
         }
 
         for (int i = 0; i < lockerAmount; i++) {
@@ -114,10 +140,8 @@ public class DevelopingEnvironment {
             routine();
             time.timeInterval();
         }
-
-        if (stats) {
+        if (dailyStatistics)
             statistics.saveDailyData(simulationDay, sendHome);
-        }
     }
 
     /**
@@ -125,17 +149,17 @@ public class DevelopingEnvironment {
      */
     private void routine() {
 
-        if (checkForVisitor()) {
-            assignLocker();
-        }
-        if (!vipArrived) {
-            checkForFocusPerson();
-        }
+        if (checkForVisitor()) assignLocker();
+
+        if (!vipArrived) checkForFocusPerson();
+
         if (vipLocker != null && !vipLeft) {
             updateNeighbourList();
-            if ((time.getCurrentTime() >= (vipLocker.changeOnArrival - timeToChange)) && (time.getCurrentTime() <= vipLocker.changeOnArrival)) {
+            if ((time.getCurrentTime() >= (vipLocker.changeOnArrival - timeToChange))
+                    && (time.getCurrentTime() <= vipLocker.changeOnArrival)) {
                 vipEncounters = encounter();
-            } else if ((time.getCurrentTime() >= vipLocker.changeOnDeparture) && (time.getCurrentTime() <= (vipLocker.changeOnDeparture + timeToChange))) {
+            } else if ((time.getCurrentTime() >= vipLocker.changeOnDeparture)
+                    && (time.getCurrentTime() <= (vipLocker.changeOnDeparture + timeToChange))) {
                 vipEncounters = encounter();
             }
         }
@@ -143,8 +167,8 @@ public class DevelopingEnvironment {
     }
 
     /**
-     * Checks if the time is due for the Focus
-     * Person to be entering the Studio
+     * Checks if the time is due for the VIP
+     * to be entering the Studio
      */
     private void checkForFocusPerson() {
         if ((time.getCurrentTime() >= arrivalTimeVip - timeToChange) && (time.getCurrentTime() <= arrivalTimeVip + timeToChange)
@@ -164,7 +188,8 @@ public class DevelopingEnvironment {
     }
 
     /**
-     * Assigns a random locker to a Person
+     * Assigns a Locker to a Visitor
+     * either randomly or with a strategy
      */
     private void assignLocker() {
         Locker locker;
@@ -190,13 +215,14 @@ public class DevelopingEnvironment {
             vipLockerAssigned = true;
         }
 
-        dailyAmount = statistics.getMap().get(time.inMin(duration));
-        dailyAmount++;
-        statistics.getMap().replace(time.inMin(duration), dailyAmount);
+        durationOccurrence = statistics.getMap().get(time.inMin(duration));
+        durationOccurrence++;
+        statistics.getMap().replace(time.inMin(duration), durationOccurrence);
     }
 
     /**
-     * @return random number of Locker to be assigned
+     * Searches randomly for a locker number which can be assigned.
+     * @return locker number
      */
     private int randomLockerNumber() {
         int lockerNumber;
@@ -209,11 +235,15 @@ public class DevelopingEnvironment {
         if (freeLockers.size() == 0) {
             return exitCode;
         } else {
-            lockerNumber = rnd.nextInt(freeLockers.size());
+            lockerNumber = random.nextInt(freeLockers.size());
             return freeLockers.get(lockerNumber).lockerNumber;
         }
     }
 
+    /**
+     * Searches with a strategy for a locker number which can be assigned.
+     * @return locker number
+     */
     private int strategyLockerNumber() {
         int addFive = 5;
         int addThree = 3;
@@ -255,6 +285,12 @@ public class DevelopingEnvironment {
      *
      * @return
      */
+
+    /**
+     * Searches randomly for a duration, which can be
+     * set as the duration of a Visitor.
+     * @return duration
+     */
     private long getRandomDuration() {
         Long guestTime = 0l;
         Random rnd = new Random();
@@ -269,6 +305,9 @@ public class DevelopingEnvironment {
         return guestTime;
     }
 
+    /**
+     * Updates the Lists of the neighbours of the VIP.
+     */
     private void updateNeighbourList() {
         Locker locker;
         occupiedNeighbours.clear();
@@ -284,6 +323,10 @@ public class DevelopingEnvironment {
         }
     }
 
+    /**
+     * Sets a locker back to its default values.
+     * @param lockerNr  locker to be freed
+     */
     private void freeLocker(int lockerNr) {
         Locker locker;
 
@@ -303,8 +346,8 @@ public class DevelopingEnvironment {
     }
 
     /**
-     * Checks if the duration of a Locker to be occupied
-     * is up and frees it if so
+     * Checks if the duration of a Locker which
+     * is occupied, is up and frees it
      */
     private void updateLockers() {
         Locker locker;
@@ -315,6 +358,11 @@ public class DevelopingEnvironment {
         }
     }
 
+    /**
+     * Checks if the Duration Time for a Locker is up.
+     * @param lockerNr  locker to be checked
+     * @return          true if the time is up
+     */
     private boolean timeUp(int lockerNr) {
         Locker locker = lockerList.get(lockerNr);
         return locker.changeOnDeparture < time.getCurrentTime();
@@ -324,7 +372,10 @@ public class DevelopingEnvironment {
      * checks for encounters
      * when the changing time of the focus person and some other guest, who uses a neighbour locker, is overlapping
      *
-     * @return number of encounters (max 2)
+     * @return number of encounters
+     *         0 if the VIP had no encounter during his stay
+     *         1 if the VIP had an encounter at the beginning or at the end of his stay
+     *         2 if the VIP had an encounter at the beginning and at the end of his stay
      */
     private int encounter() {
         Locker locker;

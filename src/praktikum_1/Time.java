@@ -1,34 +1,39 @@
 package praktikum_1;
 
+/**
+ * Implements the class Time, which is needed
+ *
+ * @author Malte Grebe
+ * @version 1.0
+ */
 public class Time {
 
-    private long time;
+    private long totalTime;
     private long currentTime;
 
     /**
-     * Constructor
-     * currentTime : time
-     * time : overall time the simulation is running in s
+     * Constructor for Initialization of a Time object.
      *
-     * @param dayTime the amount of time the studio is open in hours
+     * totalTime       overall time the simulation is running in seconds
+     * currentTime     value of time at the moment
+     * @param dayTime   the amount of time the studio is opened in hours
      */
     public Time(long dayTime) {
         this.currentTime = 0;
-        this.time = inSec(dayTime);
+        this.totalTime = inSec(dayTime);
     }
 
     /**
      * updates the current time in a 10s interval
      */
     public void timeInterval() {
-        if (currentTime < time) {
+        if (currentTime < totalTime) {
             currentTime += 10;
         }
     }
 
     /**
-     * Getter for the currentTime (startet counting from 0 -> time the studio closes)
-     *
+     * (started counting from 0 till the time the studio closes)
      * @return the currentTime
      */
     public long getCurrentTime() {
@@ -36,20 +41,15 @@ public class Time {
     }
 
     /**
-     * Getter for the amount of hours the studio is open
-     *
      * @return the time the studio is open
      */
     public long getDayTime() {
-        return time;
+        return totalTime;
     }
 
     /**
-     * Time in hours is required!
-     * Calculates the time in seconds
-     *
-     * @param timeInHours time in hours
-     * @return time in seconds
+     * @param timeInHours   time in hours
+     * @return              time in seconds
      */
     public long inSec(long timeInHours) {
         timeInHours = timeInHours * 60 * 60;
@@ -57,11 +57,8 @@ public class Time {
     }
 
     /**
-     * Time in seconds is required!
-     * Calculates the time in min
-     *
      * @param timeInSeconds time in seconds
-     * @return time in minutes
+     * @return              time in minutes
      */
     public long inMin(long timeInSeconds) {
         timeInSeconds = timeInSeconds / 60;

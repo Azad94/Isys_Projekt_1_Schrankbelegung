@@ -277,19 +277,23 @@ public class DevelopingEnvironment {
                 }
             }
         }*/
+        long guestArrivalStart;
+        long guestArrivalEnd;
+        long guestDepartureStart;
+        long guestDepartureEnd;
+
+        long vipArrivalStart = targetLocker.changeOnArrival - timeToChange;
+        long vipArrivalEnd = targetLocker.changeOnArrival;
+        long vipDepartureStart = targetLocker.changeOnDeparture;
+        long vipDepartureEnd = targetLocker.changeOnDeparture + timeToChange;
 
         for(int i = 0; i < occupiedNeighbours.size(); i++){
             locker = lockerList.get(occupiedNeighbours.get(i));
-            long guestArrivalStart = locker.changeOnArrival - timeToChange;
-            long guestArrivalEnd = locker.changeOnArrival;
-            long guestDepartureStart = locker.changeOnDeparture;
-            long guestDepartureEnd = locker.changeOnDeparture + timeToChange;
 
-            long vipArrivalStart = targetLocker.changeOnArrival - timeToChange;
-            long vipArrivalEnd = targetLocker.changeOnArrival;
-            long vipDepartureStart = targetLocker.changeOnDeparture;
-            long vipDepartureEnd = targetLocker.changeOnDeparture + timeToChange;
-
+            guestArrivalStart = locker.changeOnArrival - timeToChange;
+            guestArrivalEnd = locker.changeOnArrival;
+            guestDepartureStart = locker.changeOnDeparture;
+            guestDepartureEnd = locker.changeOnDeparture + timeToChange;
 
             if(!encounterOnEnter) {
                 if ((guestArrivalStart <= vipArrivalStart && guestArrivalEnd >= vipArrivalStart && guestArrivalEnd <= vipArrivalEnd) ||

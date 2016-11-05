@@ -27,7 +27,7 @@ public class DevelopingEnvironment {
     private boolean encounterOnExit;
     //random or strategy
     private boolean random;
-
+    private boolean stats;
     private Random rnd;
     private Locker dummyLocker;
     private Locker targetLocker;
@@ -46,18 +46,15 @@ public class DevelopingEnvironment {
      * Initializes all Lockers and sets all default values
      */
     public DevelopingEnvironment(int lockerAmount, int simulationDay, long day, long timeOfArrival, long timeToChange,
-                                 Map<Float, Long> percentageMap, double guestProbability, boolean random) {
+                                 Map<Float, Long> percentageMap, double guestProbability, boolean random, boolean stats) {
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
-        //this.t = new Time(day); TODO ist in init()
         this.openingHours = day;
         this.timeOfArrival = timeOfArrival;
         this.rnd = new Random();
         this.sendHome = 0;
         this.random=random;
-        // this.t = new Time(openingHours);
-        //this.closingTime = t.getDayTime();
-        //this.arrivalTimeVIP = t.inSec(timeOfArrival); TODO ist in init
+        this.stats = stats;
         this.timeToChange = timeToChange;
         this.guestProbability = guestProbability;
         this.probabilityMap = percentageMap;
@@ -79,7 +76,6 @@ public class DevelopingEnvironment {
             lockerNr = strategyLockerNumber();
         }
         if (lockerNr == -1) {
-            //System.out.println("!!\nDas Studio ist leider voll\n!!");
             sendHome++;
             return;
         }
@@ -172,20 +168,15 @@ public class DevelopingEnvironment {
     private int randomLockerNumber() {
         int lockerNumber;
         freeLockers.clear();
-        // System.out.println("\nLOCKERSIZE: " + freeLockers.size());
         for (int i = 0; i < lockerList.size(); i++) {
             if (!lockerList.get(i).isOccupied()) {
                 freeLockers.add(lockerList.get(i));
             }
         }
-        //System.out.println("LISTE IST: " + freeLockers);
         if (freeLockers.size() == 0) {
             return -1;
         } else {
-            // System.out.println("SCHEINT NICHT NULL ZU SEIN");
             lockerNumber = rnd.nextInt(freeLockers.size());
-            // System.out.println("RANDOMNUMBER " + lockerNumber);
-            // System.out.println("SPINT IST " + lockerList.get(lockerNumber));
             return freeLockers.get(lockerNumber).locker_number;
         }
     }
@@ -250,6 +241,11 @@ public class DevelopingEnvironment {
         }
     }
 
+    /**
+     * checks for encounters
+     * when the chaning time of the focus person and some other guest, who uses a neighbour locker, is overlapping
+     * @return number of encounters (max 2)
+     */
     private int encounter() {
         Locker locker;
         if (encounterOnEnter && encounterOnExit) return 2;
@@ -268,11 +264,6 @@ public class DevelopingEnvironment {
                 }
             }
         }
-        System.out.println("---------------------------------------------\nENCOUNTER2:");
-        System.out.println("TargetNR :" + targetLocker.locker_number);
-        System.out.println("Occupied?:" +targetLocker.isOccupied());
-        System.out.println("changingOut: " + targetLocker.isChangingOut(time.getCurrentTime()));
-        System.out.println("encounter?" + !encounterOnEnter);
         else if (targetLocker.isOccupied() && targetLocker.isChangingOut(time.getCurrentTime()) && !encounterOnExit) {
          //   System.out.println("--------------------------------------------------------------");
          //   System.out.println("ZWEITE IF \n");
@@ -289,30 +280,30 @@ public class DevelopingEnvironment {
 
         for(int i = 0; i < occupiedNeighbours.size(); i++){
             locker = lockerList.get(occupiedNeighbours.get(i));
-            long dIn1 = locker.changeOnArrival - timeToChange;
-            long dIn2 = locker.changeOnArrival;
-            long dOut1 = locker.changeOnDeparture;
-            long dOut2 = locker.changeOnDeparture + timeToChange;
+            long guestArrivalStart = locker.changeOnArrival - timeToChange;
+            long guestArrivalEnd = locker.changeOnArrival;
+            long guestDepartureStart = locker.changeOnDeparture;
+            long guestDepartureEnd = locker.changeOnDeparture + timeToChange;
 
-            long tIn1 = targetLocker.changeOnArrival - timeToChange;
-            long tIn2 = targetLocker.changeOnArrival;
-            long tOut1 = targetLocker.changeOnDeparture;
-            long tOut2 = targetLocker.changeOnDeparture + timeToChange;
+            long vipArrivalStart = targetLocker.changeOnArrival - timeToChange;
+            long vipArrivalEnd = targetLocker.changeOnArrival;
+            long vipDepartureStart = targetLocker.changeOnDeparture;
+            long vipDepartureEnd = targetLocker.changeOnDeparture + timeToChange;
 
 
             if(!encounterOnEnter) {
-                if ((dIn1 <= tIn1 && dIn2 >= tIn1 && dIn2 <= tIn2) ||
-                        (dIn1 >= tIn1 && dIn1 <= tIn2 && dIn2 >= tIn2) ||
-                        (dOut1 <= tIn1 && dOut2 >= tIn1 && dOut2 <= tIn2) ||
-                        (dOut1 >= tIn1 && dOut1 <= tIn2 && dOut2 >= tIn2)) {
+                if ((guestArrivalStart <= vipArrivalStart && guestArrivalEnd >= vipArrivalStart && guestArrivalEnd <= vipArrivalEnd) ||
+                        (guestArrivalStart >= vipArrivalStart && guestArrivalStart <= vipArrivalEnd && guestArrivalEnd >= vipArrivalEnd) ||
+                        (guestDepartureStart <= vipArrivalStart && guestDepartureEnd >= vipArrivalStart && guestDepartureEnd <= vipArrivalEnd) ||
+                        (guestDepartureStart >= vipArrivalStart && guestDepartureStart <= vipArrivalEnd && guestDepartureEnd >= vipArrivalEnd)) {
                     encounterOnEnter = true;
                 }
             }
             if(!encounterOnExit) {
-                if ((dIn1 <= tOut1 && dIn2 >= tOut1 && dIn2 <= tOut2) ||
-                        (dIn1 >= tOut1 && dIn1 <= tOut2 && dIn2 >= tOut2) ||
-                        (dOut1 <= tOut1 && dOut2 >= tOut1 && dOut2 <= tOut2) ||
-                        (dOut1 >= tOut1 && dOut1 <= tOut2 && dOut2 >= tOut2)) {
+                if ((guestArrivalStart <= vipDepartureStart && guestArrivalEnd >= vipDepartureStart && guestArrivalEnd <= vipDepartureEnd) ||
+                        (guestArrivalStart >= vipDepartureStart && guestArrivalStart <= vipDepartureEnd && guestArrivalEnd >= vipDepartureEnd) ||
+                        (guestDepartureStart <= vipDepartureStart && guestDepartureEnd >= vipDepartureStart && guestDepartureEnd <= vipDepartureEnd) ||
+                        (guestDepartureStart >= vipDepartureStart && guestDepartureStart <= vipDepartureEnd && guestDepartureEnd >= vipDepartureEnd)) {
                     encounterOnExit = true;
                 }
             }
@@ -357,21 +348,22 @@ public class DevelopingEnvironment {
     public int getEncounters() {
         return vipEncounters;
     }
+    public int getSendHome(){
+        return sendHome;
+    }
 
     /**
      * Simulates the whole Environment/Scenario
      */
     public void simulate() {
         while (time.getCurrentTime() < time.getDayTime()) {
-            int i = 0;
             routine();
             time.timeInterval();
         }
-        //TODO MUSS WIEDER REIN
-        //statistics.saveData(simulationDay, sendHome);
-      //  System.out.println("ENCOUNTERS TODAY: "+ vipEncounters);
-        //statistics.saveData(simulationDay, sendHome);
-        //  System.out.println("ENCOUNTERS TODAY: "+ vipEncounters);
+
+        if(stats) {
+            statistics.saveDailyData(simulationDay, sendHome);
+        }
     }
 
     /**
@@ -394,20 +386,5 @@ public class DevelopingEnvironment {
             }
         }
         updateLockers();
-        /*if (!checkForVisitor()) {
-            updateLockers();
-            return;
-        }
-        checkForFocusPerson();
-        assignLocker();
-        if (targetLocker != null && !vipLeft) {
-            updateNeighbourList();
-            if ((time.getCurrentTime() >= (targetLocker.changeOnArrival - timeToChange)) && (time.getCurrentTime() <= targetLocker.changeOnArrival)) {
-                vipEncounters = encounter();
-            } else if ((time.getCurrentTime() >= targetLocker.changeOnDeparture) && (time.getCurrentTime() <= (targetLocker.changeOnDeparture + timeToChange))) {
-                vipEncounters = encounter();
-            }
-        }
-        updateLockers();*/
     }
 }

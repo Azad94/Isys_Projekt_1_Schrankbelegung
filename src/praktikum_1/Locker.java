@@ -57,6 +57,14 @@ public class Locker {
         this.changeOnArrival = changeOnArrival;
     }
 
+    public long getChangeOnArrival() {
+        return changeOnArrival;
+    }
+
+    public long getChangeOnDeparture() {
+        return changeOnDeparture;
+    }
+
     /**
      * @param changeOnDeparture change out time to set
      */

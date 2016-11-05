@@ -18,8 +18,6 @@ public class DevelopingEnvironment {
     private long arrivalTimeVIP;
     private long timeOfArrival;
 
-    //test
-    private long a = 10;
     private double guestProbability;
 
     private boolean vipArrived;
@@ -93,16 +91,6 @@ public class DevelopingEnvironment {
         locker.setDuration(duration);
         lockerList.set(locker.getLockerNumber(), locker);
         if (vipArrived && targetLocker == null && !vipLeft) {
-          /*  System.out.println("VIP arrived at " + time.getCurrentTime());
-            System.out.println("His number is: " + locker.getLockerNumber());
-            System.out.println("VIP duration is " + locker.duration);
-            System.out.println("He arrived at " + (locker.changeOnArrival-timeToChange));
-            System.out.println("His changeIn is " + locker.changeOnArrival);
-            System.out.println("his changeOut is " + locker.changeOnDeparture);
-            System.out.println("he is gone at " + (locker.changeOnDeparture+timeToChange));
-            System.out.println("endtime - starttime : " + ((locker.changeOnDeparture+timeToChange)-(locker.changeOnArrival-timeToChange)));
-            System.out.println("His Lockernumber is: " +locker.locker_number );
-            System.out.println("His neighbours are: " + locker.neighbours.toString());*/
             targetLocker = locker;
             vipLockerAssigned = true;
         }
@@ -119,6 +107,7 @@ public class DevelopingEnvironment {
      */
     private long getRandomDuration() {
         Long guestTime = 0l;
+        Random rnd = new Random();
         float rndFloat = rnd.nextFloat();
         float compare = 0.0f;
         for (int q = 0; q < percentageArray.size(); q++) {
@@ -317,7 +306,6 @@ public class DevelopingEnvironment {
                         (dOut1 <= tIn1 && dOut2 >= tIn1 && dOut2 <= tIn2) ||
                         (dOut1 >= tIn1 && dOut1 <= tIn2 && dOut2 >= tIn2)) {
                     encounterOnEnter = true;
-                   // System.out.println("ENCOUNTER ENTER");
                 }
             }
             if(!encounterOnExit) {
@@ -325,7 +313,6 @@ public class DevelopingEnvironment {
                         (dIn1 >= tOut1 && dIn1 <= tOut2 && dIn2 >= tOut2) ||
                         (dOut1 <= tOut1 && dOut2 >= tOut1 && dOut2 <= tOut2) ||
                         (dOut1 >= tOut1 && dOut1 <= tOut2 && dOut2 >= tOut2)) {
-                    //System.out.println("ENCOUNTER EXIT");
                     encounterOnExit = true;
                 }
             }
@@ -379,20 +366,12 @@ public class DevelopingEnvironment {
             int i = 0;
             routine();
             time.timeInterval();
-           /* for(Locker l: lockerList){
-               if(l.isOccupied()){
-                   i++;
-               }
-            }
-            if(time.getCurrentTime() == a){
-               // System.out.println("LOCKER BELEGT: " + i);
-                a += 3600;
-            }*/
-            // System.out.println("ENCOUNTERS: " + vipEncounters);
         }
         //TODO MUSS WIEDER REIN
         //statistics.saveData(simulationDay, sendHome);
       //  System.out.println("ENCOUNTERS TODAY: "+ vipEncounters);
+        //statistics.saveData(simulationDay, sendHome);
+        //  System.out.println("ENCOUNTERS TODAY: "+ vipEncounters);
     }
 
     /**

@@ -2,8 +2,8 @@ package praktikum_1;
 
 public class Time {
 
-    long time;
-    long currentTime;
+    private long time;
+    private long currentTime;
 
     /**
      * Constructor
@@ -48,24 +48,23 @@ public class Time {
      * Time in hours is required!
      * Calculates the time in seconds
      *
-     * @param a time in hours
+     * @param timeInHours time in hours
      * @return time in seconds
      */
-    public long inSec(long a) {
-        a = a * 60 * 60;
-        return a;
+    public long inSec(long timeInHours) {
+        timeInHours = timeInHours * 60 * 60;
+        return timeInHours;
     }
 
     /**
      * Time in seconds is required!
      * Calculates the time in min
      *
-     * @param a time in seconds
+     * @param timeInSeconds time in seconds
      * @return time in minutes
      */
-    public long inMin(long a) {
-        a = a / 60;
-        return a;
+    public long inMin(long timeInSeconds) {
+        timeInSeconds = timeInSeconds / 60;
+        return timeInSeconds;
     }
-
 }

@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class Locker {
 
-    int locker_number;
-    boolean occupied = false;
+    int lockerNumber;
+    private boolean occupied;
     long changeOnArrival;
     long changeOnDeparture;
-    long duration;
+    private long duration;
     List<Integer> neighbours;
 
 
@@ -28,7 +28,7 @@ public class Locker {
      * @param neighbours    list of neighbours from this locker
      */
     public Locker(int locker_number, boolean occupied, long changeOnArrival, long changeOnDeparture, long duration, List<Integer> neighbours) {
-        this.locker_number = locker_number;
+        this.lockerNumber = locker_number;
         this.occupied = occupied;
         this.changeOnArrival = changeOnArrival;
         this.changeOnDeparture = changeOnDeparture;
@@ -40,7 +40,7 @@ public class Locker {
      * @return locker number
      */
     public int getLockerNumber() {
-        return this.locker_number;
+        return this.lockerNumber;
     }
 
     /**
@@ -88,12 +88,12 @@ public class Locker {
 
     public boolean isChangingIn(long time){
         if(this.changeOnArrival-300<=time && time<= this.changeOnArrival){
-            return true;}
+            return true;
+        }
         return false;
     }
-
     public boolean isChangingOut(long time) {
-        if(this.changeOnDeparture<=time && time <= this.changeOnDeparture+300){
+        if(time >= this.changeOnDeparture && time <= this.changeOnDeparture+300){
             return true;
         }
         return false;
@@ -169,7 +169,7 @@ public class Locker {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Locker Number : " + this.locker_number + "\n");
+        builder.append("Locker Number : " + this.lockerNumber + "\n");
         builder.append("Occupied : " + this.occupied + "\n");
         builder.append("Change In: " + this.changeOnArrival + "\n");
         builder.append("Change Out : " + this.changeOnDeparture + "\n");

@@ -3,14 +3,10 @@ package praktikum_1;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Statistics {
 
-    Map<Long, Integer> durationFrequency = new HashMap<>();
-
+    private Map<Long, Integer> durationFrequency = new HashMap<>();
 
     /**
      * Constructor
@@ -23,7 +19,10 @@ public class Statistics {
         this.durationFrequency = map;
     }
 
-    public Map<Long, Integer> getMap(){
+    public Statistics() {
+    }
+
+    public Map<Long, Integer> getMap() {
         return this.durationFrequency;
     }
 
@@ -32,38 +31,44 @@ public class Statistics {
      *
      * @param simulatingDay day of simulation
      */
-    public void saveData(int simulatingDay) {
+    public void saveDailyData(int simulatingDay, int sendHome) {
+        try (FileWriter fw = new FileWriter("res/statistics.txt", true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.println(toString(simulatingDay, sendHome));
 
-        try{
-            Logger logger = Logger.getLogger("LogDay_Log");
-            FileHandler fh = new FileHandler("res/LogDay_"+ simulatingDay + ".log");
-            logger.addHandler(fh);
-
-            SimpleFormatter f = new SimpleFormatter();
-            fh.setFormatter(f);
-            logger.setUseParentHandlers(false);
-
-            logger.info("\n\n" + stringRepresentation(simulatingDay) + "\n");
-            int gesamt = 0;
-            for(int i: durationFrequency.values()){
-                gesamt += i;
-            }
-            //System.out.println("Personen Gesamt: " + gesamt);
-
-        }catch (SecurityException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
+
+    public void saveData(int daysOfSimulation, int totalEncounter, int sendHome, boolean withRandom) {
+        try (FileWriter fw = new FileWriter("res/statistics.txt", true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            if (withRandom) {
+                out.println("\nrandom distribution\n");
+            } else {
+                out.println("\nwith strategy\n");
+            }
+            out.println(daysOfSimulation + " days simulated");
+            out.println(sendHome + " people send home");
+            out.println(totalEncounter + " encounters in " + daysOfSimulation + " days.\n");
+            out.println("average encounter a day: " + ((double) totalEncounter / (double) daysOfSimulation));
+            out.println("average encounter in a month: " + (double) totalEncounter / ((double) daysOfSimulation / (double) 10) + "\n");
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
     /**
      * Creates a String representation of the map
      * with the duration frequencies
      */
-    public String stringRepresentation(int simulatingDay) {
+    private String toString(int simulatingDay, int sendHome) {
         StringBuilder builder = new StringBuilder();
         int numOfPeople = 0;
-        builder.append("\n----- SIMULATIONSTAG NR. " + simulatingDay + " -----\n");
+        builder.append("----- SIMULATIONDAY NR. " + simulatingDay + " -----\n");
         builder.append("Belegungszeit (in Minuten)");
         builder.append("\t");
         builder.append("Häufigkeit des Auftretens");
@@ -74,17 +79,12 @@ public class Statistics {
             builder.append(printMap.getValue());
             builder.append("\r\n");
         }
-        for(int i : durationFrequency.values()){
-            numOfPeople+=i;
+
+        for (int i : durationFrequency.values()) {
+            numOfPeople += i;
         }
-        builder.append("\nNumber of Persons: " + numOfPeople);
-        builder.append("\n\n");
-       // System.out.println("STRING TO WRITE --> " + builder.toString().trim() + "\n");
+        builder.append("\nNumber of Persons: " + numOfPeople + "\n");
+        builder.append("People send home: " + sendHome);
         return builder.toString().trim();
     }
 }
-
-/**
- * Mittelwert der häufigkeitsverteilung multipliziert mit der Wahrscheinlichkeit
- * ca. 46 = 1/3 belegt
- **/

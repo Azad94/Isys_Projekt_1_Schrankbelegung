@@ -27,7 +27,7 @@ public class DevelopingEnvironment {
     private boolean encounterOnEnter;
     private boolean encounterOnExit;
     //random or strategy distribution of Lockers
-    private boolean random;
+    private boolean withRandom;
     private boolean stats;
 
     private Random rnd;
@@ -45,14 +45,14 @@ public class DevelopingEnvironment {
      * Initializes all Lockers and sets all default values
      */
     public DevelopingEnvironment(int lockerAmount, int simulationDay, long day, long timeOfArrival, long timeToChange,
-                                 Map<Float, Long> percentageMap, double guestProbability, boolean random, boolean stats) {
+                                 Map<Float, Long> percentageMap, double guestProbability, boolean withRandom, boolean stats) {
         this.lockerAmount = lockerAmount;
         this.simulationDay = simulationDay;
         this.openingHours = day;
         this.timeOfArrival = timeOfArrival;
         this.rnd = new Random();
         this.sendHome = 0;
-        this.random = random;
+        this.withRandom = withRandom;
         this.stats = stats;
         this.timeToChange = timeToChange;
         this.guestProbability = guestProbability;
@@ -169,7 +169,7 @@ public class DevelopingEnvironment {
     private void assignLocker() {
         Locker locker;
         int lockerNr;
-        if (random) {
+        if (withRandom) {
             lockerNr = randomLockerNumber();
         } else {
             lockerNr = strategyLockerNumber();

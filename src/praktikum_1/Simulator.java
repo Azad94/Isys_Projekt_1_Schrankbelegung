@@ -14,7 +14,7 @@ import java.util.*;
  * index 4: amount of lockers in the studio
  * index 5: probability that a Visitor arrives at the gym
  * index 6: true if random distribution
- *
+ * index 7; true if youn want to print the daily duration frequency distribution
  */
 public class Simulator {
     public static void main(String[] args) throws IOException {
@@ -28,6 +28,7 @@ public class Simulator {
         int lockerAmount = Integer.parseInt(args[4]);
         double arrivalProbability = Double.parseDouble(args[5]);
         boolean withRandom = Boolean.valueOf(args[6]);
+        boolean dailyStats = Boolean.valueOf(args[7]);
 
         int total = 0;
         int dummy = 0;
@@ -35,8 +36,6 @@ public class Simulator {
         int sendHome = 0;
         float percentageValue = 0.0f;
 
-        //true, to print daily statistics in the output file
-        boolean dailyStats = true;
 
         Map<String, String> map = new HashMap<>();
         Map<Float, Long> percentageMap = new HashMap<>();

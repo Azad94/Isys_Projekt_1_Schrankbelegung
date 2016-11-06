@@ -6,29 +6,36 @@ import java.util.List;
 
 /**
  * Implements the class Locker, that represents
- * each Locker in a Fitness Studio, which is used
- * for Software developing purposes
+ * each Locker in a Fitness-Studio, which is used
+ * for Software developing purposes.
+ *
+ * @author Sheraz Azad
+ * @version 1.0
  */
 public class Locker {
 
-    int locker_number;
-    boolean occupied = false;
+    int lockerNumber;
+    private boolean occupied;
+
+    //time when the Visitor is finished changing on Arrival
     long changeOnArrival;
+    //time when the Visitor will start changing on Departure
     long changeOnDeparture;
-    long duration;
+    private long duration;
     List<Integer> neighbours;
 
 
     /**
-     * @param locker_number number of this Locker
-     * @param occupied      shows if this Locker is in use
-     * @param changeOnArrival     the time he'll be finished changing at the beginning
-     * @param changeOnDeparture    the time he'll be finished changing at the end
-     * @param duration      time this locker is occupied
-     * @param neighbours    list of neighbours from this locker
+     * Constructor for Initialization of a Locker object.
+     * @param locker_number         number of this Locker
+     * @param occupied              shows if this Locker is in use
+     * @param changeOnArrival       the time he'll be finished changing at the beginning
+     * @param changeOnDeparture     the time he'll be finished changing at the end
+     * @param duration              time this locker is occupied
+     * @param neighbours            list of neighbours from this locker
      */
     public Locker(int locker_number, boolean occupied, long changeOnArrival, long changeOnDeparture, long duration, List<Integer> neighbours) {
-        this.locker_number = locker_number;
+        this.lockerNumber = locker_number;
         this.occupied = occupied;
         this.changeOnArrival = changeOnArrival;
         this.changeOnDeparture = changeOnDeparture;
@@ -40,7 +47,7 @@ public class Locker {
      * @return locker number
      */
     public int getLockerNumber() {
-        return this.locker_number;
+        return this.lockerNumber;
     }
 
     /**
@@ -57,10 +64,16 @@ public class Locker {
         this.changeOnArrival = changeOnArrival;
     }
 
+    /**
+     * @return time when the Visitor is finished changing on Arrival
+     */
     public long getChangeOnArrival() {
         return changeOnArrival;
     }
 
+    /**
+     * @return time when the Visitor will start changing on Departure
+     */
     public long getChangeOnDeparture() {
         return changeOnDeparture;
     }
@@ -85,12 +98,22 @@ public class Locker {
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
+
+    /**
+     * @param time  current Time
+     * @return      true if the Visitor is changing on Arrival
+     */
     public boolean isChangingIn(long time){
         if(this.changeOnArrival-300<=time && time<= this.changeOnArrival){
             return true;
         }
         return false;
     }
+
+    /**
+     * @param time  current Time
+     * @return      true if the Visitor is changing on Departure
+     */
     public boolean isChangingOut(long time) {
         if(time >= this.changeOnDeparture && time <= this.changeOnDeparture+300){
             return true;
@@ -98,8 +121,8 @@ public class Locker {
         return false;
     }
     /**
-     * Searches for the neighbours of the Locker from the Focus Person.
-     * Regarding which Locker the Focus Person has it's neighbours
+     * Searches for the neighbours of this Locker.
+     * Regarding where the Locker is assigned there
      * are either three or five.
      *
      * @param locker_number   number of the locker which neighbours are supposed to be found
@@ -168,7 +191,7 @@ public class Locker {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Locker Number : " + this.locker_number + "\n");
+        builder.append("Locker Number : " + this.lockerNumber + "\n");
         builder.append("Occupied : " + this.occupied + "\n");
         builder.append("Change In: " + this.changeOnArrival + "\n");
         builder.append("Change Out : " + this.changeOnDeparture + "\n");

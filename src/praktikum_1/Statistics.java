@@ -4,14 +4,22 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Creates all necessary Statistics for a single Simulation Day
+ * or all days of Simulation, as set.
+ *
+ * @author Sheraz Azad and Malte Grebe
+ * @version 1.0
+ */
 public class Statistics {
 
-    Map<Long, Integer> durationFrequency = new HashMap<>();
+
+    private Map<Long, Integer> durationFrequency = new HashMap<>();
 
     /**
-     * Constructor
+     * Constructor for Initialization of a Static object.
      *
-     * @param map stored the amount of people who stayed a certain amount of time
+     * @param map stores the amount of people who stayed a certain amount of time
      *            key: amount of time
      *            value: number of people
      */
@@ -19,6 +27,9 @@ public class Statistics {
         this.durationFrequency = map;
     }
 
+    /**
+     * Constructor for Initialization of a Static object.
+     */
     public Statistics() {
     }
 
@@ -27,22 +38,31 @@ public class Statistics {
     }
 
     /**
-     * Writes the collected duration frequencies into a file
+     * Writes the collected duration frequencies of one day into a file
      *
      * @param simulatingDay day of simulation
+     * @param sendHome      number of Visitors send Home
      */
     public void saveDailyData(int simulatingDay, int sendHome) {
         try (FileWriter fw = new FileWriter("res/statistics.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
-            out.println(stringRepresentation(simulatingDay, sendHome));
+            out.println(toString(simulatingDay, sendHome));
 
         } catch (IOException e) {
             System.out.println(e);
         }
     }
 
-    public void saveData(int daysOfSimulation, int overallEncounter, int sendHome, boolean withRandom) {
+    /**
+     * Writes the collected duration frequencies of
+     * all simulated days into a file.
+     * @param daysOfSimulation  days the simulation is running
+     * @param totalEncounter    vip encounters after all days
+     * @param sendHome          visitors send Home
+     * @param withRandom        tells if the random strategy is used
+     */
+    public void saveData(int daysOfSimulation, int totalEncounter, int sendHome, boolean withRandom) {
         try (FileWriter fw = new FileWriter("res/statistics.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
@@ -53,9 +73,9 @@ public class Statistics {
             }
             out.println(daysOfSimulation + " days simulated");
             out.println(sendHome + " people send home");
-            out.println(overallEncounter + " encounters in " + daysOfSimulation + " days.\n");
-            out.println("average encounter a day: " + ((double) overallEncounter / (double) daysOfSimulation));
-            out.println("average encounter in a month: " + (double) overallEncounter / ((double) daysOfSimulation / (double) 10) + "\n");
+            out.println(totalEncounter + " encounters in " + daysOfSimulation + " days.\n");
+            out.println("average encounter a day: " + ((double) totalEncounter / (double) daysOfSimulation));
+            out.println("average encounter in a month: " + (double) totalEncounter / ((double) daysOfSimulation / (double) 10) + "\n");
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -65,20 +85,20 @@ public class Statistics {
      * Creates a String representation of the map
      * with the duration frequencies
      */
-    public String stringRepresentation(int simulatingDay, int sendHome) {
+    private String toString(int simulatingDay, int sendHome) {
         StringBuilder builder = new StringBuilder();
         int numOfPeople = 0;
         builder.append("----- SIMULATIONDAY NR. " + simulatingDay + " -----\n");
-            builder.append("Belegungszeit (in Minuten)");
+        builder.append("Belegungszeit (in Minuten)");
+        builder.append("\t");
+        builder.append("Häufigkeit des Auftretens");
+        builder.append("\r\n");
+        for (Map.Entry<Long, Integer> printMap : durationFrequency.entrySet()) {
+            builder.append(printMap.getKey());
             builder.append("\t");
-            builder.append("Häufigkeit des Auftretens");
+            builder.append(printMap.getValue());
             builder.append("\r\n");
-            for (Map.Entry<Long, Integer> printMap : durationFrequency.entrySet()) {
-                builder.append(printMap.getKey());
-                builder.append("\t");
-                builder.append(printMap.getValue());
-                builder.append("\r\n");
-            }
+        }
 
         for (int i : durationFrequency.values()) {
             numOfPeople += i;
@@ -88,8 +108,3 @@ public class Statistics {
         return builder.toString().trim();
     }
 }
-
-/**
- * Mittelwert der häufigkeitsverteilung multipliziert mit der Wahrscheinlichkeit
- * ca. 46 = 1/3 belegt
- **/

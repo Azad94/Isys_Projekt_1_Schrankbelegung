@@ -3,8 +3,6 @@ package praktikum_1;
 /**
  * Implements the class Time, which is needed
  *
- * @author Malte Grebe
- * @version 1.0
  */
 public class Time {
 

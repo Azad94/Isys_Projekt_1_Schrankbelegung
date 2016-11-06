@@ -9,8 +9,6 @@ import java.util.List;
  * each Locker in a Fitness-Studio, which is used
  * for Software developing purposes.
  *
- * @author Sheraz Azad
- * @version 1.0
  */
 public class Locker {
 

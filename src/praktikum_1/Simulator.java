@@ -15,8 +15,6 @@ import java.util.*;
  * index 5: probability that a Visitor arrives at the gym
  * index 6: true if random distribution
  *
- * @author Malte Grebe
- * @version 1.0
  */
 public class Simulator {
     public static void main(String[] args) throws IOException {
@@ -44,6 +42,7 @@ public class Simulator {
         Map<Float, Long> percentageMap = new HashMap<>();
         List<String> mapKeys;
         DevelopingEnvironment environment;
+        List<Integer> variance = new ArrayList<>();
 
         BufferedReader reader = new BufferedReader(new FileReader("res/Belegungszeiten.txt"));
         String line;
@@ -71,8 +70,9 @@ public class Simulator {
             environment.simulate();
             encounter = encounter + environment.getEncounters();
             sendHome += environment.getSendHome();
+            variance.add(environment.getEncounters());
         }
 
-        statistics.saveData(daysOfSimulation, encounter, sendHome, withRandom);
+        statistics.saveData(daysOfSimulation, encounter, sendHome, withRandom, variance);
     }
 }

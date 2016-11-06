@@ -8,8 +8,6 @@ import java.util.*;
  * needed for the random and strategic
  * distribution Option.
  *
- * @author Sheraz Azad and Malte Grebe
- * @version 1.0
  */
 public class DevelopingEnvironment {
 
@@ -293,7 +291,7 @@ public class DevelopingEnvironment {
      */
     private long getRandomDuration() {
         Long guestTime = 0l;
-        float rndFloat = rnd.nextFloat();
+        float rndFloat = random.nextFloat();
         float compare = 0.0f;
         for (int q = 0; q < percentageArray.size(); q++) {
             if (rndFloat <= percentageArray.get(q) && rndFloat > compare) {

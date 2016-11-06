@@ -8,8 +8,6 @@ import java.util.*;
  * needed for the random and strategic
  * distribution Option.
  *
- * @author Sheraz Azad and Malte Grebe
- * @version 1.0
  */
 public class DevelopingEnvironment {
 
@@ -293,8 +291,7 @@ public class DevelopingEnvironment {
      */
     private long getRandomDuration() {
         Long guestTime = 0l;
-        Random rnd = new Random();
-        float rndFloat = rnd.nextFloat();
+        float rndFloat = random.nextFloat();
         float compare = 0.0f;
         for (int q = 0; q < percentageArray.size(); q++) {
             if (rndFloat <= percentageArray.get(q) && rndFloat > compare) {
@@ -426,3 +423,29 @@ public class DevelopingEnvironment {
         return 0;
     }
 }
+
+/*
+    private int encounter() {
+        Locker locker;
+        if (encounterOnEnter && encounterOnExit) return 2;
+
+        if (targetLocker.isOccupied() && targetLocker.isChangingIn(time.getCurrentTime()) && !encounterOnEnter) {
+            for (int i : occupiedNeighbours) {
+                locker = lockerList.get(i);
+                if (locker.isChangingIn(time.getCurrentTime()) || locker.isChangingOut(time.getCurrentTime())) {
+                    encounterOnEnter = true;
+                }
+            }
+        }
+        else if (targetLocker.isOccupied() && targetLocker.isChangingOut(time.getCurrentTime()) && !encounterOnExit) {
+            for (int i : occupiedNeighbours) {
+                locker = lockerList.get(i);
+                if (locker.isChangingIn(time.getCurrentTime()) || locker.isChangingOut(time.getCurrentTime())) {
+                    encounterOnExit = true;
+                }
+            }
+        }
+        if ((encounterOnEnter && !encounterOnExit) || (!encounterOnEnter && encounterOnExit)) return 1;
+        return 0;
+    }
+ */

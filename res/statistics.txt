@@ -1,0 +1,12 @@
+
+with strategy
+
+1000 days simulated
+0 people send home
+193 encounters in 1000 days.
+
+average encounter a day: 0.193
+average encounter in a month: 1.93
+
+the variance is: 3.220920000000039
+the standard deviation is: 1.794692174162477

@@ -359,6 +359,7 @@ public class DevelopingEnvironment {
      * Checks if the Duration Time for a Locker is up.
      * @param lockerNr  locker to be checked
      * @return          true if the time is up
+     *
      */
     private boolean timeUp(int lockerNr) {
         Locker locker = lockerList.get(lockerNr);
